@@ -3,16 +3,19 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Temporarily disabled Google Services for clean build
+    // id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.hub4apps.mindful_living"
+    namespace = "com.hub4apps.mindfulliving"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -20,14 +23,18 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.hub4apps.mindful_living"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        applicationId = "com.hub4apps.mindfulliving"
+        minSdk = 28  // Android 9.0 Pie (2018) - covers 85% globally with modern features
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true  // Support for older devices with method limit
+        
+        // Support for most Indian device architectures
+        ndk {
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))  // Most common in India
+        }
     }
 
     buildTypes {
@@ -41,4 +48,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation("androidx.multidex:multidex:2.0.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

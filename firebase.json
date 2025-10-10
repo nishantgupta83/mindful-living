@@ -1,0 +1,34 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "hub4apps-mindfulliving",
+          "appId": "1:456746876426:android:a98b9f966cff77c90e69f3",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "hub4apps-mindfulliving",
+          "appId": "1:456746876426:ios:3068be4a05ed981c0e69f3",
+          "uploadDebugSymbols": true,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "hub4apps-mindfulliving",
+          "configurations": {
+            "android": "1:456746876426:android:a98b9f966cff77c90e69f3",
+            "ios": "1:456746876426:ios:3068be4a05ed981c0e69f3"
+          }
+        }
+      }
+    }
+  }
+}

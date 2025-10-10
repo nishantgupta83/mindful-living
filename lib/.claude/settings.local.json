@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/nishantgupta/Documents/MindfulLiving/app/**)",
+      "Read(//Users/nishantgupta/Documents/MindfulLiving/**)",
+      "Bash(flutter pub:*)",
+      "Bash(flutter build:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(firebase --version)",
+      "Bash(flutterfire:*)",
+      "Bash(dart pub global activate:*)",
+      "Bash(export PATH=\"$PATH:$HOME/.pub-cache/bin\")",
+      "Bash(firebase login:ci:*)",
+      "Bash(npm install)",
+      "Bash(firebase:*)",
+      "Bash(npm run build:*)",
+      "Bash(flutter clean:*)",
+      "Bash(pod install:*)",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(tree:*)",
+      "Bash(flutter test:*)",
+      "Bash(sed:*)",
+      "Bash(flutter run:*)",
+      "Bash(find:*)",
+      "Bash(nc:*)",
+      "Read(//Users/nishantgupta/Desktop/**)",
+      "Bash(xcodebuild:*)",
+      "Bash(open:*)",
+      "Bash(xcrun simctl list:*)",
+      "Bash(plutil:*)",
+      "Bash(chmod:*)",
+      "Bash(./setup_watch_app.sh:*)",
+      "Read(//Users/nishantgupta/Documents/GitaGyan/OldWisdom/lib/core/**)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "file_generated_by": "FlutterFire CLI",
+  "purpose": "FirebaseAppID file for Dart configuration",
+  "GOOGLE_APP_ID": "1:123456789:ios:your-app-id-here",
+  "FIREBASE_PROJECT_ID": "hub4apps-mindfulliving",
+  "GCM_SENDER_ID": "123456789",
+  "BUNDLE_ID": "com.hub4apps.mindfulLiving",
+  "PROJECT_ID": "hub4apps-mindfulliving",
+  "STORAGE_BUCKET": "hub4apps-mindfulliving.appspot.com"
+}

@@ -1,0 +1,268 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Mindful Living",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "welcomeMessage": "Welcome to your mindful journey",
+  "@welcomeMessage": {
+    "description": "Welcome message for new users"
+  },
+  
+  "dashboardTitle": "Dashboard",
+  "@dashboardTitle": {
+    "description": "Dashboard page title"
+  },
+  
+  "wellnessScore": "Wellness Score",
+  "@wellnessScore": {
+    "description": "Label for wellness score display"
+  },
+  
+  "currentStreak": "Current Streak",
+  "@currentStreak": {
+    "description": "Label for current wellness streak"
+  },
+  
+  "daysSingular": "day",
+  "@daysSingular": {
+    "description": "Singular form of day"
+  },
+  
+  "daysPlural": "days",
+  "@daysPlural": {
+    "description": "Plural form of days"
+  },
+  
+  "todayMood": "How are you feeling today?",
+  "@todayMood": {
+    "description": "Prompt for daily mood check-in"
+  },
+  
+  "journalEntry": "Journal Entry",
+  "@journalEntry": {
+    "description": "Label for journal entry"
+  },
+  
+  "writeJournal": "Write in journal",
+  "@writeJournal": {
+    "description": "Button text to write journal entry"
+  },
+  
+  "lifeSituations": "Life Situations",
+  "@lifeSituations": {
+    "description": "Title for life situations section"
+  },
+  
+  "exploreMore": "Explore More",
+  "@exploreMore": {
+    "description": "Button text to explore more content"
+  },
+  
+  "favorites": "Favorites",
+  "@favorites": {
+    "description": "Label for favorites section"
+  },
+  
+  "addToFavorites": "Add to Favorites",
+  "@addToFavorites": {
+    "description": "Button text to add to favorites"
+  },
+  
+  "removeFromFavorites": "Remove from Favorites",
+  "@removeFromFavorites": {
+    "description": "Button text to remove from favorites"
+  },
+  
+  "share": "Share",
+  "@share": {
+    "description": "Button text for sharing content"
+  },
+  
+  "voiceAssistant": "Voice Assistant",
+  "@voiceAssistant": {
+    "description": "Label for voice assistant feature"
+  },
+  
+  "askVoiceQuestion": "Ask me anything about wellness...",
+  "@askVoiceQuestion": {
+    "description": "Placeholder text for voice query"
+  },
+  
+  "listening": "Listening...",
+  "@listening": {
+    "description": "Status text when listening to voice input"
+  },
+  
+  "processing": "Processing...",
+  "@processing": {
+    "description": "Status text when processing voice query"
+  },
+  
+  "mindfulApproach": "Mindful Approach",
+  "@mindfulApproach": {
+    "description": "Section title for mindful approach"
+  },
+  
+  "practicalSteps": "Practical Steps",
+  "@practicalSteps": {
+    "description": "Section title for practical steps"
+  },
+  
+  "keyInsights": "Key Insights",
+  "@keyInsights": {
+    "description": "Section title for key insights"
+  },
+  
+  "wellnessPractices": "Wellness Practices",
+  "@wellnessPractices": {
+    "description": "Title for wellness practices section"
+  },
+  
+  "breathingExercise": "Breathing Exercise",
+  "@breathingExercise": {
+    "description": "Label for breathing exercise"
+  },
+  
+  "meditation": "Meditation",
+  "@meditation": {
+    "description": "Label for meditation practice"
+  },
+  
+  "mindfulWalk": "Mindful Walk",
+  "@mindfulWalk": {
+    "description": "Label for mindful walking practice"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile page title"
+  },
+  
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Label for dark mode setting"
+  },
+  
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Label for notifications setting"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Label for language setting"
+  },
+  
+  "about": "About",
+  "@about": {
+    "description": "Label for about section"
+  },
+  
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Label for privacy policy"
+  },
+  
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Label for terms of service"
+  },
+  
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Button text for sign in"
+  },
+  
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Button text for sign out"
+  },
+  
+  "signUp": "Sign Up",
+  "@signUp": {
+    "description": "Button text for sign up"
+  },
+  
+  "email": "Email",
+  "@email": {
+    "description": "Label for email field"
+  },
+  
+  "password": "Password",
+  "@password": {
+    "description": "Label for password field"
+  },
+  
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Link text for forgot password"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  
+  "done": "Done",
+  "@done": {
+    "description": "Done button text"
+  },
+  
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
+  
+  "error": "Error",
+  "@error": {
+    "description": "Generic error message"
+  },
+  
+  "success": "Success",
+  "@success": {
+    "description": "Generic success message"
+  },
+  
+  "aiInsight": "AI Insight",
+  "@aiInsight": {
+    "description": "Label for AI-generated insights"
+  },
+  
+  "personalizedRecommendation": "Personalized for you",
+  "@personalizedRecommendation": {
+    "description": "Label for AI personalized content"
+  },
+  
+  "musicMode": "Music Mode",
+  "@musicMode": {
+    "description": "Label for music mode setting"
+  },
+  
+  "ambientSounds": "Ambient Sounds",
+  "@ambientSounds": {
+    "description": "Label for ambient sounds"
+  },
+  
+  "moodBasedMusic": "Mood-Based Music",
+  "@moodBasedMusic": {
+    "description": "Label for mood-based music feature"
+  }
+}

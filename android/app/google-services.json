@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "456746876426",
+    "firebase_url": "https://hub4apps-mindfulliving-default-rtdb.firebaseio.com",
+    "project_id": "hub4apps-mindfulliving",
+    "storage_bucket": "hub4apps-mindfulliving.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456746876426:android:a98b9f966cff77c90e69f3",
+        "android_client_info": {
+          "package_name": "com.hub4apps.mindfulliving"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0DcOR_S3WlTcXdgHf_ml47FK2KuCaAx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

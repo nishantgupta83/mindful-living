@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub:*)",
+      "Bash(flutter packages pub run:*)",
+      "Bash(flutter run:*)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter doctor:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(mkdir:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(chmod:*)",
+      "Read(//Users/nishantgupta/Documents/GitaGyan/OldWisdom/**)",
+      "Bash(npm install)",
+      "Bash(npm run export:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(cat:*)",
+      "Bash(npm install:*)",
+      "Bash(awk:*)",
+      "Bash(firebase login:*)",
+      "Bash(firebase projects:list:*)",
+      "Bash(gcloud auth:*)",
+      "Bash(firebase firestore:indexes:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(dart pub global activate:*)",
+      "Bash($HOME/.pub-cache/bin/flutterfire configure --project=hub4apps-mindfulliving --yes --platforms=android,ios --out=lib/firebase_options.dart)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebSearch",
+      "Bash(flutter build:*)",
+      "Bash(flutter:*)",
+      "Bash(pod repo update:*)",
+      "Bash(pod install:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "life_situations",
+      "fieldPath": "tags",
+      "indexes": [
+        {
+          "queryScope": "COLLECTION",
+          "arrayConfig": "CONTAINS"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "life_situations",
+      "fieldPath": "voiceKeywords",
+      "indexes": [
+        {
+          "queryScope": "COLLECTION",
+          "arrayConfig": "CONTAINS"
+        }
+      ]
+    }
+  ]
+}
