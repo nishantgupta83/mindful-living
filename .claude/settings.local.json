@@ -31,7 +31,11 @@
       "Bash(pod repo update:*)",
       "Bash(pod install:*)",
       "WebFetch(domain:api.github.com)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

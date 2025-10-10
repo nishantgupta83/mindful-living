@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/intelligent_search_service.dart';
 import '../../../../shared/widgets/category_filter_chips.dart';
 import '../../../../shared/widgets/situation_card.dart';
 import '../../../../shared/utils/life_area_utils.dart';
@@ -19,14 +20,17 @@ class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<DocumentSnapshot> _situations = [];
+  final IntelligentSearchService _searchService = IntelligentSearchService();
 
   String? _selectedCategory;
   String _searchQuery = '';
   bool _isLoading = false;
   bool _hasMore = true;
   bool _isSearching = false;
+  bool _isIndexing = false;
   DocumentSnapshot? _lastDocument;
   Timer? _debounce;
+  List<Map<String, dynamic>> _searchResults = [];
 
   static const int _pageSize = 20;
 
@@ -57,15 +61,50 @@ class _ExplorePageState extends State<ExplorePage> {
 
     setState(() {
       _isSearching = true;
+      _searchQuery = query;
     });
 
-    _debounce = Timer(const Duration(milliseconds: 300), () {
+    if (query.isEmpty) {
       setState(() {
-        _searchQuery = query;
+        _searchResults = [];
         _isSearching = false;
       });
       _refreshSituations();
+      return;
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      await _performIntelligentSearch(query);
     });
+  }
+
+  Future<void> _performIntelligentSearch(String query) async {
+    try {
+      setState(() {
+        _isSearching = true;
+      });
+
+      // Perform AI-powered search with TF-IDF ranking
+      final results = await _searchService.search(
+        query,
+        maxResults: 50, // Get more results for better relevance
+      );
+
+      if (mounted) {
+        setState(() {
+          _searchResults = results;
+          _isSearching = false;
+        });
+      }
+    } catch (e) {
+      print('Search error: $e');
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+          _isSearching = false;
+        });
+      }
+    }
   }
 
   Future<void> _loadInitialSituations() async {
@@ -140,17 +179,14 @@ class _ExplorePageState extends State<ExplorePage> {
     return query;
   }
 
-  List<DocumentSnapshot> get _filteredSituations {
-    if (_searchQuery.isEmpty) return _situations;
+  // Returns either AI search results or regular Firestore results
+  bool get _usingAISearch => _searchQuery.isNotEmpty && _searchResults.isNotEmpty;
 
-    return _situations.where((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      final title = (data['title'] ?? '').toString().toLowerCase();
-      final description = (data['description'] ?? '').toString().toLowerCase();
-      final searchLower = _searchQuery.toLowerCase();
-
-      return title.contains(searchLower) || description.contains(searchLower);
-    }).toList();
+  int get _resultsCount {
+    if (_searchQuery.isNotEmpty) {
+      return _searchResults.length;
+    }
+    return _situations.length;
   }
 
   Future<void> _refreshSituations() async {
@@ -167,8 +203,6 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredSituations = _filteredSituations;
-
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _refreshSituations,
@@ -182,10 +216,11 @@ class _ExplorePageState extends State<ExplorePage> {
             // App Bar with Search
             _buildSearchAppBar(),
 
-            // Category Filters
-            SliverToBoxAdapter(
-              child: _buildCategoryFilters(),
-            ),
+            // Category Filters (hide during search)
+            if (_searchQuery.isEmpty)
+              SliverToBoxAdapter(
+                child: _buildCategoryFilters(),
+              ),
 
             // Results Count
             SliverToBoxAdapter(
@@ -193,9 +228,37 @@ class _ExplorePageState extends State<ExplorePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
+                    if (_usingAISearch)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.lavender.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.auto_awesome,
+                              size: 14,
+                              color: AppColors.deepLavender,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'AI Search',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.deepLavender,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (_usingAISearch) const SizedBox(width: 12),
                     Text(
-                      '${filteredSituations.length} situation${filteredSituations.length != 1 ? 's' : ''}',
-                      style: TextStyle(
+                      '$_resultsCount situation${_resultsCount != 1 ? 's' : ''}',
+                      style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.softCharcoal,
                         fontWeight: FontWeight.w500,
@@ -203,11 +266,14 @@ class _ExplorePageState extends State<ExplorePage> {
                     ),
                     if (_searchQuery.isNotEmpty) ...[
                       const SizedBox(width: 8),
-                      Text(
-                        'for "$_searchQuery"',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.softCharcoal,
+                      Expanded(
+                        child: Text(
+                          'for "$_searchQuery"',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.softCharcoal,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -217,43 +283,79 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
 
             // Situations List
-            if (filteredSituations.isEmpty && !_isLoading)
+            if (_resultsCount == 0 && !_isLoading && !_isSearching)
               _buildEmptyState()
+            else if (_usingAISearch)
+              _buildSearchResultsList()
             else
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    if (index >= filteredSituations.length) {
-                      return _buildLoadingIndicator();
-                    }
-
-                    final doc = filteredSituations[index];
-                    final data = doc.data() as Map<String, dynamic>;
-
-                    return Hero(
-                      tag: 'situation_${doc.id}',
-                      child: SituationCard(
-                        key: ValueKey(doc.id),
-                        title: data['title'] ?? 'Untitled',
-                        description: data['description'] ?? '',
-                        lifeArea: data['lifeArea'],
-                        difficulty: data['difficulty'],
-                        readTime: data['estimatedReadTime'],
-                        tags: (data['tags'] as List?)?.cast<String>(),
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          // Navigate to detail
-                        },
-                      ),
-                    );
-                  },
-                  childCount: filteredSituations.length + (_hasMore ? 1 : 0),
-                ),
-              ),
+              _buildRegularSituationsList(),
 
             const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSearchResultsList() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final result = _searchResults[index];
+          final id = result['id'] as String;
+          final relevanceScore = result['relevanceScore'] as double?;
+
+          return Hero(
+            tag: 'situation_$id',
+            child: SituationCard(
+              key: ValueKey(id),
+              title: result['title'] ?? 'Untitled',
+              description: result['description'] ?? '',
+              lifeArea: result['lifeArea'],
+              difficulty: result['difficulty'],
+              readTime: result['estimatedReadTime'],
+              tags: (result['tags'] as List?)?.cast<String>(),
+              onTap: () {
+                HapticFeedback.lightImpact();
+                // Navigate to detail
+              },
+            ),
+          );
+        },
+        childCount: _searchResults.length,
+      ),
+    );
+  }
+
+  Widget _buildRegularSituationsList() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= _situations.length) {
+            return _buildLoadingIndicator();
+          }
+
+          final doc = _situations[index];
+          final data = doc.data() as Map<String, dynamic>;
+
+          return Hero(
+            tag: 'situation_${doc.id}',
+            child: SituationCard(
+              key: ValueKey(doc.id),
+              title: data['title'] ?? 'Untitled',
+              description: data['description'] ?? '',
+              lifeArea: data['lifeArea'],
+              difficulty: data['difficulty'],
+              readTime: data['estimatedReadTime'],
+              tags: (data['tags'] as List?)?.cast<String>(),
+              onTap: () {
+                HapticFeedback.lightImpact();
+                // Navigate to detail
+              },
+            ),
+          );
+        },
+        childCount: _situations.length + (_hasMore && !_usingAISearch ? 1 : 0),
       ),
     );
   }
