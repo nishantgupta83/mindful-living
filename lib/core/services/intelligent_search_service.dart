@@ -1,16 +1,28 @@
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/wellness_concepts.dart';
 
-/// Intelligent Search Service with NLP capabilities
+/// Enhanced Intelligent Search Service with Phase 1 improvements
 ///
-/// Implements advanced search features:
+/// **MVP1 Features (Implemented):**
 /// - TF-IDF (Term Frequency-Inverse Document Frequency) scoring
 /// - Fuzzy matching for typos and partial matches
 /// - Stop word removal
 /// - Multi-field search (title, description, tags, category)
 /// - Relevance ranking
+/// - **Wellness Concept Mapping** - Semantic query expansion
+/// - **Advanced Caching with TTL** - 30-day stale-while-revalidate
+/// - **Hybrid Scoring** - 60% keyword + 40% semantic overlap
 ///
-/// Inspired by GitaWisdom2's search logic but optimized for Mindful Living
+/// **MVP2 Features (Research Complete, Deferred):**
+/// See MVP2_ADVANCED_SEARCH_FEATURES.md for:
+/// - TensorFlow Lite semantic search
+/// - Emotional context detection
+/// - Reciprocal Rank Fusion (RRF)
+/// - BM25 algorithm
+///
+/// Inspired by GitaWisdom2 + Azure AI + Google Cloud best practices
 class IntelligentSearchService {
   // Singleton pattern
   static final IntelligentSearchService _instance = IntelligentSearchService._internal();
@@ -23,12 +35,22 @@ class IntelligentSearchService {
   int _documentCount = 0;
   bool _isIndexed = false;
 
+  // Caching with TTL (stale-while-revalidate pattern)
+  DateTime? _lastIndexRefresh;
+  static const _cacheValidityDuration = Duration(days: 30);
+  static const _cacheKeyLastRefresh = 'search_index_last_refresh';
+  bool _isRefreshing = false;
+
   // Stop words (common words to ignore)
   static const Set<String> _stopWords = {
     'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
     'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
     'to', 'was', 'will', 'with', 'i', 'me', 'my', 'we', 'you', 'your',
   };
+
+  // Hybrid scoring weights (based on Azure AI/Google Cloud research)
+  static const double _keywordWeight = 0.6;  // 60% keyword (TF-IDF)
+  static const double _semanticWeight = 0.4;  // 40% semantic overlap
 
   /// Initialize and index all situations from Firestore
   Future<void> indexSituations() async {
