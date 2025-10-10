@@ -27,7 +27,10 @@ class IntelligentSearchService {
   // Singleton pattern
   static final IntelligentSearchService _instance = IntelligentSearchService._internal();
   factory IntelligentSearchService() => _instance;
-  IntelligentSearchService._internal();
+  IntelligentSearchService._internal() {
+    // Load cache timestamp on initialization
+    _loadCacheTimestamp();
+  }
 
   // Search index
   final Map<String, Map<String, double>> _invertedIndex = {};
@@ -53,8 +56,13 @@ class IntelligentSearchService {
   static const double _semanticWeight = 0.4;  // 40% semantic overlap
 
   /// Initialize and index all situations from Firestore
+  /// Implements stale-while-revalidate caching pattern
   Future<void> indexSituations() async {
-    if (_isIndexed) return; // Already indexed
+    if (_isIndexed && !_isCacheExpired()) {
+      // Already indexed and cache is fresh
+      _refreshInBackgroundIfNeeded(); // Stale-while-revalidate
+      return;
+    }
 
     print('🔍 Starting intelligent search indexing...');
     final stopwatch = Stopwatch()..start();
@@ -119,12 +127,81 @@ class IntelligentSearchService {
       }
 
       _isIndexed = true;
+      _lastIndexRefresh = DateTime.now();
+
+      // Persist cache timestamp
+      await _saveCacheTimestamp();
+
       stopwatch.stop();
       print('✅ Search index built in ${stopwatch.elapsedMilliseconds}ms');
       print('📊 Indexed ${_invertedIndex.length} unique terms');
     } catch (e) {
       print('❌ Error building search index: $e');
       _isIndexed = false;
+    }
+  }
+
+  /// Check if cache has expired (30-day TTL)
+  bool _isCacheExpired() {
+    if (_lastIndexRefresh == null) return true;
+
+    final now = DateTime.now();
+    final age = now.difference(_lastIndexRefresh!);
+
+    return age > _cacheValidityDuration;
+  }
+
+  /// Refresh index in background if approaching expiration (stale-while-revalidate)
+  void _refreshInBackgroundIfNeeded() {
+    if (_isRefreshing || _lastIndexRefresh == null) return;
+
+    final now = DateTime.now();
+    final age = now.difference(_lastIndexRefresh!);
+
+    // Refresh in background if cache is > 25 days old (before 30-day expiration)
+    if (age > const Duration(days: 25)) {
+      _isRefreshing = true;
+
+      // Non-blocking background refresh
+      Future.microtask(() async {
+        try {
+          print('🔄 Background index refresh started...');
+          _isIndexed = false; // Force re-index
+          await indexSituations();
+          print('✅ Background index refresh complete');
+        } finally {
+          _isRefreshing = false;
+        }
+      });
+    }
+  }
+
+  /// Save cache timestamp to SharedPreferences
+  Future<void> _saveCacheTimestamp() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        _cacheKeyLastRefresh,
+        _lastIndexRefresh?.toIso8601String() ?? '',
+      );
+      print('💾 Cache timestamp saved');
+    } catch (e) {
+      print('⚠️ Failed to save cache timestamp: $e');
+    }
+  }
+
+  /// Load cache timestamp from SharedPreferences
+  Future<void> _loadCacheTimestamp() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final timestamp = prefs.getString(_cacheKeyLastRefresh);
+
+      if (timestamp != null && timestamp.isNotEmpty) {
+        _lastIndexRefresh = DateTime.parse(timestamp);
+        print('📅 Cache timestamp loaded: $_lastIndexRefresh');
+      }
+    } catch (e) {
+      print('⚠️ Failed to load cache timestamp: $e');
     }
   }
 
@@ -148,19 +225,29 @@ class IntelligentSearchService {
       return [];
     }
 
+    // PHASE 1: Wellness concept expansion for semantic query enhancement
+    final expandedTerms = WellnessConcepts.expandQuery(query);
+    print('🧠 Query expanded: ${queryTokens.length} → ${expandedTerms.length} terms');
+
+    // Combine original tokens with expanded wellness concepts
+    final allSearchTerms = {...queryTokens, ...expandedTerms};
+
     // Score all documents
     final scores = <String, double>{};
 
     for (var docId in _documents.keys) {
       double score = 0.0;
+      double keywordScore = 0.0;
+      double semanticScore = 0.0;
 
+      // Calculate keyword score (original query terms with higher weight)
       for (var queryTerm in queryTokens) {
         // Exact match score
         if (_invertedIndex.containsKey(queryTerm) &&
             _invertedIndex[queryTerm]!.containsKey(docId)) {
           final tf = _invertedIndex[queryTerm]![docId]!;
           final idf = _calculateIDF(queryTerm);
-          score += tf * idf * 2.0; // Boost exact matches
+          keywordScore += tf * idf * 2.0; // Boost exact matches
         }
 
         // Fuzzy match score (partial matches)
@@ -171,11 +258,25 @@ class IntelligentSearchService {
               final tf = _invertedIndex[indexTerm]![docId]!;
               final idf = _calculateIDF(indexTerm);
               final similarity = _calculateStringSimilarity(queryTerm, indexTerm);
-              score += tf * idf * similarity; // Partial match bonus
+              keywordScore += tf * idf * similarity; // Partial match bonus
             }
           }
         }
       }
+
+      // Calculate semantic score (expanded wellness concepts)
+      final expandedOnlyTerms = allSearchTerms.difference(queryTokens.toSet());
+      for (var expandedTerm in expandedOnlyTerms) {
+        if (_invertedIndex.containsKey(expandedTerm) &&
+            _invertedIndex[expandedTerm]!.containsKey(docId)) {
+          final tf = _invertedIndex[expandedTerm]![docId]!;
+          final idf = _calculateIDF(expandedTerm);
+          semanticScore += tf * idf; // Semantic match from concept expansion
+        }
+      }
+
+      // Hybrid scoring: 60% keyword + 40% semantic (Azure AI best practice)
+      score = (keywordScore * _keywordWeight) + (semanticScore * _semanticWeight);
 
       if (score > 0) {
         scores[docId] = score;
