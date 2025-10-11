@@ -187,13 +187,13 @@ class AdaptiveComponents {
       return CupertinoSwitch(
         value: value,
         onChanged: onChanged,
-        activeColor: switchColor,
+        activeTrackColor: switchColor,
       );
     } else {
       return Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: switchColor,
+        activeTrackColor: switchColor,
       );
     }
   }

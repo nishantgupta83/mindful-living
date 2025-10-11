@@ -61,13 +61,13 @@ class AndroidInitializationManager {
       await AndroidSystemIntegration.initialize();
 
       // Setup Google Fit connection
-      await AndroidSystemIntegration.GoogleFitIntegration.connect();
+      await GoogleFitIntegration.connect();
 
       // Configure Android Auto support
-      await AndroidSystemIntegration.AndroidAutoIntegration.configure();
+      await AndroidAutoIntegration.configure();
 
       // Setup Google Assistant integration
-      await AndroidSystemIntegration.GoogleAssistantIntegration.setupAppActions();
+      await GoogleAssistantIntegration.setupAppActions();
 
       debugPrint('$_logTag: System integrations initialized');
     } catch (e) {
@@ -84,19 +84,19 @@ class AndroidInitializationManager {
       await AndroidPerformanceOptimizer.initialize();
 
       // Optimize memory for life situations
-      await AndroidPerformanceOptimizer.MemoryOptimizer.optimizeForLifeSituations();
+      await MemoryOptimizer.optimizeForLifeSituations();
 
       // Configure scroll performance
-      await AndroidPerformanceOptimizer.RenderingOptimizer.optimizeScrollPerformance();
+      await RenderingOptimizer.optimizeScrollPerformance();
 
       // Setup battery optimizations
-      await AndroidPerformanceOptimizer.BatteryOptimizer.optimizeBackgroundProcessing();
+      await BatteryOptimizer.optimizeBackgroundProcessing();
 
       // Configure storage optimizations
-      await AndroidPerformanceOptimizer.StorageOptimizer.optimizeHiveStorage();
+      await StorageOptimizer.optimizeHiveStorage();
 
       // Start performance monitoring
-      AndroidPerformanceOptimizer.PerformanceMonitor.startMonitoring();
+      PerformanceMonitor.startMonitoring();
 
       debugPrint('$_logTag: Performance optimizations initialized');
     } catch (e) {
@@ -113,9 +113,9 @@ class AndroidInitializationManager {
       _configureSystemUI(context);
 
       // Setup accessibility services
-      await AndroidSystemIntegration.AccessibilityServicesIntegration.configureTalkBack();
-      await AndroidSystemIntegration.AccessibilityServicesIntegration.setupVoiceFeedback();
-      await AndroidSystemIntegration.AccessibilityServicesIntegration.configureVisualAccessibility();
+      await AccessibilityServicesIntegration.configureTalkBack();
+      await AccessibilityServicesIntegration.setupVoiceFeedback();
+      await AccessibilityServicesIntegration.configureVisualAccessibility();
 
       // Configure Material Design optimizations
       _configureMaterialDesign(context);
@@ -132,10 +132,10 @@ class AndroidInitializationManager {
 
     try {
       // Configure audio session for meditation
-      await AndroidPerformanceOptimizer.AudioOptimizer.configureAudioSession();
+      await AudioOptimizer.configureAudioSession();
 
       // Setup home screen widget
-      await AndroidSystemIntegration.HomeScreenWidgetIntegration.setupWidget();
+      await HomeScreenWidgetIntegration.setupWidget();
 
       // Configure haptic feedback
       _configureHapticFeedback();
@@ -152,13 +152,13 @@ class AndroidInitializationManager {
 
     try {
       // Create notification channels
-      await AndroidSystemIntegration.NotificationManagement.createChannels();
+      await NotificationManagement.createChannels();
 
       // Setup intelligent caching
-      await AndroidPerformanceOptimizer.StorageOptimizer.setupIntelligentCaching();
+      await StorageOptimizer.setupIntelligentCaching();
 
       // Configure Firebase optimizations
-      await AndroidPerformanceOptimizer.NetworkOptimizer.optimizeFirebaseConnection();
+      await NetworkOptimizer.optimizeFirebaseConnection();
 
       debugPrint('$_logTag: Background services initialized');
     } catch (e) {
@@ -236,7 +236,7 @@ class AndroidInitializationManager {
 
     try {
       final integrationStatus = await AndroidSystemIntegration.getIntegrationStatus();
-      final performanceReport = await AndroidPerformanceOptimizer.PerformanceMonitor.getPerformanceReport();
+      final performanceReport = await PerformanceMonitor.getPerformanceReport();
 
       return AndroidHealthReport(
         isInitialized: _isInitialized,
@@ -260,7 +260,7 @@ class AndroidInitializationManager {
     if (!Platform.isAndroid || !_isInitialized) return;
 
     try {
-      await AndroidSystemIntegration.HomeScreenWidgetIntegration.updateWidget(
+      await HomeScreenWidgetIntegration.updateWidget(
         wellnessScore: wellnessScore,
         currentMood: currentMood,
         meditationStreak: meditationStreak,
@@ -280,7 +280,7 @@ class AndroidInitializationManager {
     if (!Platform.isAndroid || !_isInitialized) return;
 
     try {
-      await AndroidSystemIntegration.NotificationManagement.scheduleWellnessReminders(
+      await NotificationManagement.scheduleWellnessReminders(
         reminderTimes: reminderTimes,
         userTimeZone: DateTime.now().timeZoneName,
       );
@@ -300,7 +300,7 @@ class AndroidInitializationManager {
     if (!Platform.isAndroid || !_isInitialized) return;
 
     try {
-      await AndroidSystemIntegration.GoogleFitIntegration.syncMeditationSession(
+      await GoogleFitIntegration.syncMeditationSession(
         duration: duration,
         startTime: startTime,
         sessionType: sessionType,
@@ -319,9 +319,9 @@ class AndroidInitializationManager {
     try {
       // Route to appropriate handler based on source
       if (command.toLowerCase().contains('drive') || command.toLowerCase().contains('car')) {
-        await AndroidSystemIntegration.AndroidAutoIntegration.handleVoiceCommand(command);
+        await AndroidAutoIntegration.handleVoiceCommand(command);
       } else {
-        await AndroidSystemIntegration.GoogleAssistantIntegration.handleVoiceQuery(command);
+        await GoogleAssistantIntegration.handleVoiceQuery(command);
       }
 
       debugPrint('$_logTag: Voice command handled: $command');
@@ -337,15 +337,15 @@ class AndroidInitializationManager {
     try {
       switch (pattern) {
         case UsagePattern.meditation:
-          await AndroidPerformanceOptimizer.AudioOptimizer.optimizeAudioQuality();
-          await AndroidPerformanceOptimizer.BatteryOptimizer.enableDozeCompatibility();
+          await AudioOptimizer.optimizeAudioQuality();
+          await BatteryOptimizer.enableDozeCompatibility();
           break;
         case UsagePattern.browsing:
-          await AndroidPerformanceOptimizer.RenderingOptimizer.optimizeListViewPerformance();
-          await AndroidPerformanceOptimizer.MemoryOptimizer.optimizeMemoryUsage();
+          await RenderingOptimizer.optimizeListViewPerformance();
+          await MemoryOptimizer.optimizeMemoryUsage();
           break;
         case UsagePattern.background:
-          await AndroidPerformanceOptimizer.BatteryOptimizer.optimizeBackgroundProcessing();
+          await BatteryOptimizer.optimizeBackgroundProcessing();
           break;
       }
 
@@ -360,7 +360,7 @@ class AndroidInitializationManager {
     if (!Platform.isAndroid || !_isInitialized) return;
 
     try {
-      AndroidPerformanceOptimizer.PerformanceMonitor.stopMonitoring();
+      PerformanceMonitor.stopMonitoring();
       _isInitialized = false;
       debugPrint('$_logTag: Android resources cleaned up');
     } catch (e) {

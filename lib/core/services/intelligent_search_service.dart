@@ -1,7 +1,10 @@
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/wellness_concepts.dart';
+import 'error_handling_service.dart';
 
 /// Enhanced Intelligent Search Service with Phase 1 improvements
 ///
@@ -64,7 +67,7 @@ class IntelligentSearchService {
       return;
     }
 
-    print('🔍 Starting intelligent search indexing...');
+    debugPrint('🔍 Starting intelligent search indexing...');
     final stopwatch = Stopwatch()..start();
 
     try {
@@ -75,7 +78,7 @@ class IntelligentSearchService {
           .get();
 
       _documentCount = querySnapshot.docs.length;
-      print('📚 Indexing $_documentCount situations...');
+      debugPrint('📚 Indexing $_documentCount situations...');
 
       // Clear existing index
       _invertedIndex.clear();
@@ -133,10 +136,22 @@ class IntelligentSearchService {
       await _saveCacheTimestamp();
 
       stopwatch.stop();
-      print('✅ Search index built in ${stopwatch.elapsedMilliseconds}ms');
-      print('📊 Indexed ${_invertedIndex.length} unique terms');
-    } catch (e) {
-      print('❌ Error building search index: $e');
+      debugPrint('✅ Search index built in ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint('📊 Indexed ${_invertedIndex.length} unique terms');
+    } on FirebaseException catch (e, stackTrace) {
+      ErrorHandlingService.instance.handleFirestoreError(
+        error: e,
+        stackTrace: stackTrace,
+        customMessage: 'Failed to build search index',
+      );
+      _isIndexed = false;
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        userMessage: null, // Don't show SnackBar for indexing errors
+        severity: ErrorSeverity.error,
+      );
       _isIndexed = false;
     }
   }
@@ -165,10 +180,10 @@ class IntelligentSearchService {
       // Non-blocking background refresh
       Future.microtask(() async {
         try {
-          print('🔄 Background index refresh started...');
+          debugPrint('🔄 Background index refresh started...');
           _isIndexed = false; // Force re-index
           await indexSituations();
-          print('✅ Background index refresh complete');
+          debugPrint('✅ Background index refresh complete');
         } finally {
           _isRefreshing = false;
         }
@@ -184,9 +199,14 @@ class IntelligentSearchService {
         _cacheKeyLastRefresh,
         _lastIndexRefresh?.toIso8601String() ?? '',
       );
-      print('💾 Cache timestamp saved');
-    } catch (e) {
-      print('⚠️ Failed to save cache timestamp: $e');
+      debugPrint('💾 Cache timestamp saved');
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        userMessage: null,
+        severity: ErrorSeverity.warning,
+      );
     }
   }
 
@@ -198,10 +218,15 @@ class IntelligentSearchService {
 
       if (timestamp != null && timestamp.isNotEmpty) {
         _lastIndexRefresh = DateTime.parse(timestamp);
-        print('📅 Cache timestamp loaded: $_lastIndexRefresh');
+        debugPrint('📅 Cache timestamp loaded: $_lastIndexRefresh');
       }
-    } catch (e) {
-      print('⚠️ Failed to load cache timestamp: $e');
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        userMessage: null,
+        severity: ErrorSeverity.warning,
+      );
     }
   }
 
@@ -215,7 +240,7 @@ class IntelligentSearchService {
       return [];
     }
 
-    print('🔍 Searching for: "$query"');
+    debugPrint('🔍 Searching for: "$query"');
     final stopwatch = Stopwatch()..start();
 
     // Tokenize query
@@ -227,7 +252,7 @@ class IntelligentSearchService {
 
     // PHASE 1: Wellness concept expansion for semantic query enhancement
     final expandedTerms = WellnessConcepts.expandQuery(query);
-    print('🧠 Query expanded: ${queryTokens.length} → ${expandedTerms.length} terms');
+    debugPrint('🧠 Query expanded: ${queryTokens.length} → ${expandedTerms.length} terms');
 
     // Combine original tokens with expanded wellness concepts
     final allSearchTerms = {...queryTokens, ...expandedTerms};
@@ -311,7 +336,7 @@ class IntelligentSearchService {
     }).toList();
 
     stopwatch.stop();
-    print('✅ Found ${results.length} results in ${stopwatch.elapsedMilliseconds}ms');
+    debugPrint('✅ Found ${results.length} results in ${stopwatch.elapsedMilliseconds}ms');
 
     return results;
   }
@@ -468,7 +493,7 @@ class IntelligentSearchService {
     _documents.clear();
     _documentCount = 0;
     _isIndexed = false;
-    print('🗑️ Search index cleared');
+    debugPrint('🗑️ Search index cleared');
   }
 
   /// Get index statistics

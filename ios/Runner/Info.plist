@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Mindful Living needs access to your photo library to let you add images to your journal entries and share your wellness progress.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Mindful Living needs access to your camera to let you take photos for your journal entries and capture meaningful moments.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Mindful Living needs access to your microphone to enable voice notes in your journal and guided meditation recordings.</string>
 </dict>
 </plist>

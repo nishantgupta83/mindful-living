@@ -295,7 +295,14 @@ class _SignupPageState extends State<SignupPage>
                                 onChanged: (value) {
                                   setState(() => _agreeToTerms = value ?? false);
                                 },
-                                activeColor: AppColors.deepLavender,
+                                fillColor: WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return AppColors.deepLavender;
+                                    }
+                                    return Colors.grey;
+                                  },
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4),
                                 ),

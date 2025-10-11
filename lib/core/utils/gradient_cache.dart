@@ -41,8 +41,8 @@ class GradientCache {
       // Light gradient (for unselected state)
       _linearGradients['${key}_light'] = LinearGradient(
         colors: [
-          colors[0].withOpacity(0.1),
-          colors[1].withOpacity(0.05),
+          colors[0].withValues(alpha: 0.1),
+          colors[1].withValues(alpha: 0.05),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -59,7 +59,7 @@ class GradientCache {
         gradient: _linearGradients['${key}_light'],
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colors[0].withOpacity(0.3),
+          color: colors[0].withValues(alpha: 0.3),
           width: 2,
         ),
         boxShadow: getCachedShadow('${key}_unselected'),
@@ -68,7 +68,7 @@ class GradientCache {
       // Cache shadows
       _shadows['${key}_selected'] = [
         BoxShadow(
-          color: colors[0].withOpacity(0.4),
+          color: colors[0].withValues(alpha: 0.4),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
@@ -76,7 +76,7 @@ class GradientCache {
 
       _shadows['${key}_unselected'] = [
         BoxShadow(
-          color: colors[0].withOpacity(0.15),
+          color: colors[0].withValues(alpha: 0.15),
           blurRadius: 8,
           offset: const Offset(0, 4),
         ),

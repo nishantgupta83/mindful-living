@@ -33,8 +33,67 @@ class AndroidSystemIntegration {
     }
   }
 
-  /// Google Fit Integration for Wellness Tracking
-  static class GoogleFitIntegration {
+  /// Get Android system integration status
+  static Future<Map<String, bool>> getIntegrationStatus() async {
+    if (!Platform.isAndroid) {
+      return {
+        'googleFit': false,
+        'androidAuto': false,
+        'googleAssistant': false,
+        'homeWidget': false,
+        'accessibility': false,
+        'notifications': false,
+      };
+    }
+
+    try {
+      final result = await _channel.invokeMethod('getIntegrationStatus');
+      return Map<String, bool>.from(result);
+    } catch (e) {
+      debugPrint('$_logTag: Failed to get integration status: $e');
+      return {
+        'googleFit': false,
+        'androidAuto': false,
+        'googleAssistant': false,
+        'homeWidget': false,
+        'accessibility': false,
+        'notifications': false,
+      };
+    }
+  }
+
+  /// Private helper methods for initialization
+  static Future<void> _initializeGoogleFitConnection() async {
+    await GoogleFitIntegration.connect();
+  }
+
+  static Future<void> _setupAndroidAutoSupport() async {
+    await AndroidAutoIntegration.configure();
+  }
+
+  static Future<void> _configureGoogleAssistantActions() async {
+    await GoogleAssistantIntegration.setupAppActions();
+  }
+
+  static Future<void> _setupHomeScreenWidget() async {
+    await HomeScreenWidgetIntegration.setupWidget();
+  }
+
+  static Future<void> _configureAccessibilityServices() async {
+    await AccessibilityServicesIntegration.configureTalkBack();
+    await AccessibilityServicesIntegration.setupVoiceFeedback();
+    await AccessibilityServicesIntegration.configureVisualAccessibility();
+  }
+
+  static Future<void> _setupNotificationChannels() async {
+    await NotificationManagement.createChannels();
+  }
+}
+
+/// Google Fit Integration for Wellness Tracking
+class GoogleFitIntegration {
+    static const String _logTag = 'GoogleFitIntegration';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/android_integration');
     static const String _fitScope = 'https://www.googleapis.com/auth/fitness.activity.read';
 
     /// Connect to Google Fit for wellness data synchronization
@@ -106,10 +165,13 @@ class AndroidSystemIntegration {
       // Basic calculation: ~3 calories per minute for meditation
       return (duration.inMinutes * 3).round();
     }
-  }
+}
 
-  /// Android Auto Integration for Mindful Driving
-  static class AndroidAutoIntegration {
+/// Android Auto Integration for Mindful Driving
+class AndroidAutoIntegration {
+    static const String _logTag = 'AndroidAutoIntegration';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/android_integration');
+
     /// Setup Android Auto support for voice-guided meditation
     static Future<void> configure() async {
       if (!Platform.isAndroid) return;
@@ -160,13 +222,16 @@ class AndroidSystemIntegration {
 
         debugPrint('$_logTag: Started driving meditation session');
       } catch (e) {
-        debugPrint('$_logTag: Failed to start driving meditation: $e');
+        debugPrint('AndroidSystemIntegration: Failed to start driving meditation: $e');
       }
     }
-  }
+}
 
-  /// Google Assistant Integration for Voice Wellness Queries
-  static class GoogleAssistantIntegration {
+/// Google Assistant Integration for Voice Wellness Queries
+class GoogleAssistantIntegration {
+    static const String _logTag = 'GoogleAssistantIntegration';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/android_integration');
+
     /// Setup App Actions for Google Assistant
     static Future<void> setupAppActions() async {
       if (!Platform.isAndroid) return;
@@ -226,10 +291,13 @@ class AndroidSystemIntegration {
         return [];
       }
     }
-  }
+}
 
-  /// Home Screen Widget Integration
-  static class HomeScreenWidgetIntegration {
+/// Home Screen Widget Integration
+class HomeScreenWidgetIntegration {
+    static const String _logTag = 'HomeScreenWidgetIntegration';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/android_integration');
+
     /// Configure wellness widget for quick access
     static Future<void> setupWidget() async {
       if (!Platform.isAndroid) return;
@@ -286,13 +354,16 @@ class AndroidSystemIntegration {
 
         debugPrint('$_logTag: Handled widget tap: $action');
       } catch (e) {
-        debugPrint('$_logTag: Failed to handle widget tap: $e');
+        debugPrint('AndroidSystemIntegration: Failed to handle widget tap: $e');
       }
     }
-  }
+}
 
-  /// Android Accessibility Services Integration
-  static class AccessibilityServicesIntegration {
+/// Android Accessibility Services Integration
+class AccessibilityServicesIntegration {
+    static const String _logTag = 'AccessibilityServicesIntegration';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/android_integration');
+
     /// Configure TalkBack support for meditation sessions
     static Future<void> configureTalkBack() async {
       if (!Platform.isAndroid) return;
@@ -344,13 +415,15 @@ class AndroidSystemIntegration {
 
         debugPrint('$_logTag: Visual accessibility configured');
       } catch (e) {
-        debugPrint('$_logTag: Failed to configure visual accessibility: $e');
+        debugPrint('AndroidSystemIntegration: Failed to configure visual accessibility: $e');
       }
     }
-  }
+}
 
-  /// Android Notification Management
-  static class NotificationManagement {
+/// Android Notification Management
+class NotificationManagement {
+    static const String _logTag = 'NotificationManagement';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/android_integration');
     static const String _channelIdWellness = 'wellness_reminders';
     static const String _channelIdMeditation = 'meditation_sessions';
     static const String _channelIdJournal = 'journal_prompts';
@@ -465,66 +538,9 @@ class AndroidSystemIntegration {
 
         debugPrint('$_logTag: Progress notification sent');
       } catch (e) {
-        debugPrint('$_logTag: Failed to send progress notification: $e');
+        debugPrint('AndroidSystemIntegration: Failed to send progress notification: $e');
       }
     }
-  }
-
-  /// Private helper methods for initialization
-  static Future<void> _initializeGoogleFitConnection() async {
-    await GoogleFitIntegration.connect();
-  }
-
-  static Future<void> _setupAndroidAutoSupport() async {
-    await AndroidAutoIntegration.configure();
-  }
-
-  static Future<void> _configureGoogleAssistantActions() async {
-    await GoogleAssistantIntegration.setupAppActions();
-  }
-
-  static Future<void> _setupHomeScreenWidget() async {
-    await HomeScreenWidgetIntegration.setupWidget();
-  }
-
-  static Future<void> _configureAccessibilityServices() async {
-    await AccessibilityServicesIntegration.configureTalkBack();
-    await AccessibilityServicesIntegration.setupVoiceFeedback();
-    await AccessibilityServicesIntegration.configureVisualAccessibility();
-  }
-
-  static Future<void> _setupNotificationChannels() async {
-    await NotificationManagement.createChannels();
-  }
-
-  /// Get Android system integration status
-  static Future<Map<String, bool>> getIntegrationStatus() async {
-    if (!Platform.isAndroid) {
-      return {
-        'googleFit': false,
-        'androidAuto': false,
-        'googleAssistant': false,
-        'homeWidget': false,
-        'accessibility': false,
-        'notifications': false,
-      };
-    }
-
-    try {
-      final result = await _channel.invokeMethod('getIntegrationStatus');
-      return Map<String, bool>.from(result);
-    } catch (e) {
-      debugPrint('$_logTag: Failed to get integration status: $e');
-      return {
-        'googleFit': false,
-        'androidAuto': false,
-        'googleAssistant': false,
-        'homeWidget': false,
-        'accessibility': false,
-        'notifications': false,
-      };
-    }
-  }
 }
 
 /// Android-specific wellness data models

@@ -15,11 +15,17 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomePage(),
-    ExplorePage(),
-    JournalPage(),
-    ProfilePage(),
+  void _changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  List<Widget> get _screens => [
+    const HomePage(),
+    const ExplorePage(),
+    const JournalPage(),
+    ProfilePage(onTabChange: _changeTab),
   ];
 
   @override

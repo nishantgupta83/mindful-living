@@ -10,11 +10,8 @@ import 'dart:io' show Platform;
 /// - Material You dynamic color support
 /// - Accessibility and inclusive design
 /// - Smooth animations and micro-interactions
-class AndroidMaterialDesign {
-  static const String _logTag = 'AndroidMaterialDesign';
-
-  /// Material 3 Color Schemes for Wellness
-  static class WellnessColorSchemes {
+/// Material 3 Color Schemes for Wellness
+class WellnessColorSchemes {
     /// Light color scheme optimized for wellness content
     static const ColorScheme lightWellness = ColorScheme.light(
       // Primary colors - calming blue for mindfulness
@@ -44,10 +41,6 @@ class AndroidMaterialDesign {
       surfaceContainerHigh: Color(0xFFECE6F0),
       surfaceContainerHighest: Color(0xFFE6E0E9),
       onSurfaceVariant: Color(0xFF49454F),
-
-      // Background colors
-      background: Color(0xFFFFFBFE),
-      onBackground: Color(0xFF1C1B1F),
 
       // Error colors
       error: Color(0xFFBA1A1A),
@@ -97,10 +90,6 @@ class AndroidMaterialDesign {
       surfaceContainerHighest: Color(0xFF3A3940),
       onSurfaceVariant: Color(0xFFCAC4D0),
 
-      // Background colors
-      background: Color(0xFF1C1B1F),
-      onBackground: Color(0xFFE6E1E5),
-
       // Error colors
       error: Color(0xFFFFB4AB),
       onError: Color(0xFF690005),
@@ -128,14 +117,14 @@ class AndroidMaterialDesign {
         // For now, return wellness-optimized schemes
         return dark ? darkWellness : lightWellness;
       } catch (e) {
-        debugPrint('$_logTag: Failed to get dynamic color scheme: $e');
+        debugPrint('AndroidMaterialDesign: Failed to get dynamic color scheme: $e');
         return dark ? darkWellness : lightWellness;
       }
     }
-  }
+}
 
-  /// Material 3 Typography for Wellness Content
-  static class WellnessTypography {
+/// Material 3 Typography for Wellness Content
+class WellnessTypography {
     /// Typography scale optimized for wellness content readability
     static TextTheme buildWellnessTextTheme(ColorScheme colorScheme) {
       return TextTheme(
@@ -255,10 +244,10 @@ class AndroidMaterialDesign {
         ),
       );
     }
-  }
+}
 
-  /// Material 3 Component Themes for Wellness UI
-  static class WellnessComponentThemes {
+/// Material 3 Component Themes for Wellness UI
+class WellnessComponentThemes {
     /// Navigation bar theme for wellness categories
     static NavigationBarThemeData buildNavigationBarTheme(ColorScheme colorScheme) {
       return NavigationBarThemeData(
@@ -451,7 +440,7 @@ class AndroidMaterialDesign {
           fontSize: 16,
         ),
         hintStyle: TextStyle(
-          color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
           fontSize: 16,
         ),
         errorStyle: TextStyle(
@@ -503,7 +492,10 @@ class AndroidMaterialDesign {
         ),
       );
     }
-  }
+}
+
+class AndroidMaterialDesign {
+  static const String _logTag = 'AndroidMaterialDesign';
 
   /// Build complete Material 3 theme for wellness app
   static ThemeData buildWellnessTheme({
@@ -519,7 +511,15 @@ class AndroidMaterialDesign {
 
       // Component themes
       navigationBarTheme: WellnessComponentThemes.buildNavigationBarTheme(colorScheme),
-      cardTheme: WellnessComponentThemes.buildCardTheme(colorScheme),
+      cardTheme: CardThemeData(
+        color: WellnessComponentThemes.buildCardTheme(colorScheme).color,
+        shadowColor: WellnessComponentThemes.buildCardTheme(colorScheme).shadowColor,
+        surfaceTintColor: WellnessComponentThemes.buildCardTheme(colorScheme).surfaceTintColor,
+        elevation: WellnessComponentThemes.buildCardTheme(colorScheme).elevation,
+        shape: WellnessComponentThemes.buildCardTheme(colorScheme).shape,
+        clipBehavior: WellnessComponentThemes.buildCardTheme(colorScheme).clipBehavior,
+        margin: WellnessComponentThemes.buildCardTheme(colorScheme).margin,
+      ),
       appBarTheme: WellnessComponentThemes.buildAppBarTheme(colorScheme),
       floatingActionButtonTheme: WellnessComponentThemes.buildFABTheme(colorScheme),
       chipTheme: WellnessComponentThemes.buildChipTheme(colorScheme),
@@ -605,13 +605,13 @@ class AndroidMaterialDesign {
       visualDensity: VisualDensity.standard,
 
       // Material 3 focus and hover
-      focusColor: colorScheme.primary.withOpacity(0.12),
-      hoverColor: colorScheme.onSurface.withOpacity(0.08),
-      highlightColor: colorScheme.primary.withOpacity(0.12),
-      splashColor: colorScheme.primary.withOpacity(0.12),
+      focusColor: colorScheme.primary.withValues(alpha: 0.12),
+      hoverColor: colorScheme.onSurface.withValues(alpha: 0.08),
+      highlightColor: colorScheme.primary.withValues(alpha: 0.12),
+      splashColor: colorScheme.primary.withValues(alpha: 0.12),
 
       // Accessibility
-      materialTapTargetSize: MaterialTapTargetSize.standard,
+      materialTapTargetSize: MaterialTapTargetSize.padded,
     );
   }
 
@@ -639,9 +639,10 @@ class AndroidMaterialDesign {
 
     return dark ? darkWellnessTheme : lightWellnessTheme;
   }
+}
 
-  /// Material 3 wellness-specific animations
-  static class WellnessAnimations {
+/// Material 3 wellness-specific animations
+class WellnessAnimations {
     static const Duration standardDuration = Duration(milliseconds: 300);
     static const Duration longDuration = Duration(milliseconds: 500);
     static const Duration shortDuration = Duration(milliseconds: 150);
@@ -680,10 +681,10 @@ class AndroidMaterialDesign {
         curve: standardCurve,
       ));
     }
-  }
+}
 
-  /// Material 3 micro-interactions for wellness
-  static class WellnessMicroInteractions {
+/// Material 3 micro-interactions for wellness
+class WellnessMicroInteractions {
     /// Haptic feedback for meditation interactions
     static void meditationFeedback() {
       if (Platform.isAndroid) {
@@ -711,5 +712,4 @@ class AndroidMaterialDesign {
         HapticFeedback.selectionClick();
       }
     }
-  }
 }

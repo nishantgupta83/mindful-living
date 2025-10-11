@@ -261,7 +261,7 @@ class IOSDesignSystem {
         borderRadius: BorderRadius.circular(radiusMedium),
         boxShadow: elevated ? [
           BoxShadow(
-            color: CupertinoColors.systemGrey.withOpacity(0.1),
+            color: CupertinoColors.systemGrey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -293,7 +293,7 @@ class IOSDesignSystem {
   }) {
     return createWellnessCard(
       onTap: onTap,
-      backgroundColor: backgroundColor ?? meditationBlue.withOpacity(0.1),
+      backgroundColor: backgroundColor ?? meditationBlue.withValues(alpha: 0.1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -414,8 +414,8 @@ class IOSDesignSystem {
               children: trailing!,
             )
           : null,
-      backgroundColor: backgroundColor?.withOpacity(0.9) ??
-          CupertinoColors.systemBackground.withOpacity(0.9),
+      backgroundColor: backgroundColor?.withValues(alpha: 0.9) ??
+          CupertinoColors.systemBackground.withValues(alpha: 0.9),
       border: null,
     );
   }

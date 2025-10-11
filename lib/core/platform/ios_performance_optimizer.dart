@@ -204,7 +204,7 @@ class IOSPerformanceOptimizer {
           painter: _OptimizedCircularProgressPainter(
             progress: value,
             progressColor: color,
-            backgroundColor: backgroundColor ?? Colors.grey.withOpacity(0.3),
+            backgroundColor: backgroundColor ?? Colors.grey.withValues(alpha: 0.3),
             strokeWidth: strokeWidth,
             isMetalEnabled: _isMetalEnabled,
           ),
@@ -234,8 +234,8 @@ class IOSPerformanceOptimizer {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    color.withOpacity(0.8),
-                    color.withOpacity(0.1),
+                    color.withValues(alpha: 0.8),
+                    color.withValues(alpha: 0.1),
                   ],
                 ),
               ),
@@ -438,7 +438,7 @@ class _OptimizedCircularProgressPainter extends CustomPainter {
       progressPaint.shader = LinearGradient(
         colors: [
           progressColor,
-          progressColor.withOpacity(0.8),
+          progressColor.withValues(alpha: 0.8),
         ],
       ).createShader(Rect.fromCircle(center: center, radius: radius));
     }

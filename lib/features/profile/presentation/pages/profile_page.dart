@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/user_preferences_service.dart';
+import '../../../../core/services/error_handling_service.dart';
 import '../../../auth/data/auth_service.dart';
 
 /// Enhanced Profile/More Screen
 /// Inspired by GitaWisdom2's more_screen with Material Design 3 & iOS HIG patterns
 /// Features: Account management, appearance settings, wellness preferences, support
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final Function(int)? onTabChange;
+
+  const ProfilePage({super.key, this.onTabChange});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -18,6 +23,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final AuthService _authService = AuthService();
+  final UserPreferencesService _prefsService = UserPreferencesService();
   String _appVersion = '';
   bool _isLoading = false;
 
@@ -31,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _loadAppVersion();
+    _loadUserPreferences();
   }
 
   Future<void> _loadAppVersion() async {
@@ -39,10 +46,48 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
       });
-    } catch (e) {
+    } on PlatformException catch (e, stackTrace) {
+      ErrorHandlingService.instance.handlePlatformError(
+        error: e,
+        stackTrace: stackTrace,
+        customMessage: null, // Don't show user message for version loading
+      );
       setState(() {
         _appVersion = 'Unknown';
       });
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        userMessage: null,
+        severity: ErrorSeverity.warning,
+      );
+      setState(() {
+        _appVersion = 'Unknown';
+      });
+    }
+  }
+
+  /// Load user preferences from persistent storage
+  Future<void> _loadUserPreferences() async {
+    try {
+      final prefs = await _prefsService.loadAllPreferences();
+      if (mounted) {
+        setState(() {
+          _darkModeEnabled = prefs['darkMode'] as bool;
+          _backgroundMusicEnabled = prefs['backgroundMusic'] as bool;
+          _breathingRemindersEnabled = prefs['breathingReminders'] as bool;
+          _fontSize = prefs['fontSize'] as String;
+        });
+      }
+    } catch (e, stackTrace) {
+      // Log error but don't show to user - preferences will use defaults
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        userMessage: null, // Don't show SnackBar - preferences will use defaults
+        severity: ErrorSeverity.info,
+      );
     }
   }
 
@@ -219,10 +264,12 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Breathing Reminders',
           subtitle: 'Get gentle reminders to breathe mindfully',
           value: _breathingRemindersEnabled,
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
               _breathingRemindersEnabled = value;
             });
+            // Persist the preference
+            await _prefsService.saveBreathingReminders(value);
           },
         ),
         _buildSwitchTile(
@@ -230,10 +277,12 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Background Music',
           subtitle: 'Play calming music during practices',
           value: _backgroundMusicEnabled,
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
               _backgroundMusicEnabled = value;
             });
+            // Persist the preference
+            await _prefsService.saveBackgroundMusic(value);
           },
         ),
       ],
@@ -250,16 +299,20 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Dark Mode',
           subtitle: 'Reduce eye strain in low light',
           value: _darkModeEnabled,
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
               _darkModeEnabled = value;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Dark mode coming soon!'),
-                duration: Duration(seconds: 2),
-              ),
-            );
+            // Persist the preference
+            await _prefsService.saveDarkMode(value);
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Dark mode coming soon!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            }
           },
         ),
         _buildDropdownTile(
@@ -268,10 +321,13 @@ class _ProfilePageState extends State<ProfilePage> {
           subtitle: 'Adjust text size for readability',
           value: _fontSize,
           items: ['Small', 'Medium', 'Large'],
-          onChanged: (value) {
+          onChanged: (value) async {
+            final newValue = value ?? 'Medium';
             setState(() {
-              _fontSize = value ?? 'Medium';
+              _fontSize = newValue;
             });
+            // Persist the preference
+            await _prefsService.saveFontSize(newValue);
           },
         ),
       ],
@@ -288,8 +344,8 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Search Situations',
           subtitle: 'Find guidance for any life situation',
           onTap: () {
-            // Navigate to explore with search focused
-            DefaultTabController.of(context)?.animateTo(1);
+            // Navigate to explore tab (index 1)
+            widget.onTabChange?.call(1);
           },
         ),
         _buildTile(
@@ -495,7 +551,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.lavender,
+            activeTrackColor: AppColors.lavender,
           ),
         ],
       ),
@@ -630,15 +686,21 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
         }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error signing out: ${e.toString()}'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+      } on FirebaseAuthException catch (e, stackTrace) {
+        ErrorHandlingService.instance.handleAuthError(
+          error: e,
+          stackTrace: stackTrace,
+          context: mounted ? context : null,
+          customMessage: 'Failed to sign out. Please try again.',
+        );
+      } catch (e, stackTrace) {
+        ErrorHandlingService.instance.logError(
+          error: e,
+          stackTrace: stackTrace,
+          context: mounted ? context : null,
+          userMessage: 'Sign out failed. Please try again.',
+          severity: ErrorSeverity.error,
+        );
       } finally {
         if (mounted) {
           setState(() => _isLoading = false);
@@ -667,15 +729,21 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
         }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error deleting account: ${e.toString()}'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+      } on FirebaseAuthException catch (e, stackTrace) {
+        ErrorHandlingService.instance.handleAuthError(
+          error: e,
+          stackTrace: stackTrace,
+          context: mounted ? context : null,
+          customMessage: 'Failed to delete account. You may need to sign in again first.',
+        );
+      } catch (e, stackTrace) {
+        ErrorHandlingService.instance.logError(
+          error: e,
+          stackTrace: stackTrace,
+          context: mounted ? context : null,
+          userMessage: 'Account deletion failed. Please try again.',
+          severity: ErrorSeverity.error,
+        );
       } finally {
         if (mounted) {
           setState(() => _isLoading = false);
@@ -685,9 +753,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _handleShareApp() {
-    Share.share(
-      'Transform your daily life with Mindful Living - practical guidance for every situation. Download now!',
-      subject: 'Mindful Living App',
+    SharePlus.instance.share(
+      ShareParams(
+        text: 'Transform your daily life with Mindful Living - practical guidance for every situation. Download now!',
+        subject: 'Mindful Living App',
+      ),
     );
   }
 

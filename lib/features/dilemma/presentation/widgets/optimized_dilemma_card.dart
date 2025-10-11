@@ -70,12 +70,12 @@ class OptimizedDilemmaCard extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
       border: Border.all(
-        color: colors[0].withOpacity(0.2),
+        color: colors[0].withValues(alpha: 0.2),
         width: 1,
       ),
       boxShadow: [
         BoxShadow(
-          color: colors[0].withOpacity(0.1),
+          color: colors[0].withValues(alpha: 0.1),
           blurRadius: 10,
           offset: const Offset(0, 5),
         ),
@@ -185,7 +185,7 @@ class OptimizedDilemmaCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: difficultyColor.withOpacity(0.1),
+            color: difficultyColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(

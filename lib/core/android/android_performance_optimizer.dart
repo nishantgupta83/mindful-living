@@ -41,8 +41,54 @@ class AndroidPerformanceOptimizer {
     }
   }
 
-  /// Memory Management for Large Datasets
-  static class MemoryOptimizer {
+  /// Private initialization methods
+  static Future<void> _enableHardwareAcceleration() async {
+    await _channel.invokeMethod('enableHardwareAcceleration');
+  }
+
+  static Future<void> _optimizeMemoryManagement() async {
+    await MemoryOptimizer.optimizeForLifeSituations();
+    await MemoryOptimizer.optimizeImageCaching();
+  }
+
+  static Future<void> _configureRenderingOptimizations() async {
+    await RenderingOptimizer.optimizeScrollPerformance();
+    await RenderingOptimizer.optimizeListViewPerformance();
+    await RenderingOptimizer.optimizeAnimations();
+  }
+
+  static Future<void> _setupBatteryOptimizations() async {
+    await BatteryOptimizer.optimizeBackgroundProcessing();
+    await BatteryOptimizer.optimizeNotificationScheduling();
+    await BatteryOptimizer.enableDozeCompatibility();
+  }
+
+  static Future<void> _optimizeStorageAccess() async {
+    await StorageOptimizer.optimizeHiveStorage();
+    await StorageOptimizer.setupIntelligentCaching();
+    await StorageOptimizer.optimizeDatabasePerformance();
+  }
+
+  static Future<void> _configureNetworkOptimizations() async {
+    await NetworkOptimizer.optimizeFirebaseConnection();
+    await NetworkOptimizer.setupIntelligentSync();
+  }
+
+  static Future<void> _setupAudioSessionManagement() async {
+    await AudioOptimizer.configureAudioSession();
+    await AudioOptimizer.optimizeAudioQuality();
+    await AudioOptimizer.configureBackgroundAudio();
+  }
+
+  /// Getters
+  static bool get isInitialized => _isInitialized;
+  static Map<String, PerformanceMetric> get metrics => Map.unmodifiable(_metrics);
+}
+
+/// Memory Management for Large Datasets
+class MemoryOptimizer {
+    static const String _logTag = 'MemoryOptimizer';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/performance');
     static const int _maxCacheSize = 50; // Maximum cached life situations
     static const int _memoryThreshold = 80; // Memory usage threshold percentage
 
@@ -114,13 +160,16 @@ class AndroidPerformanceOptimizer {
           debugPrint('$_logTag: Memory optimization triggered');
         }
       } catch (e) {
-        debugPrint('$_logTag: Failed to optimize memory usage: $e');
+        debugPrint('AndroidPerformanceOptimizer: Failed to optimize memory usage: $e');
       }
     }
-  }
+}
 
-  /// Frame Rate and Scroll Performance Optimizer
-  static class RenderingOptimizer {
+/// Frame Rate and Scroll Performance Optimizer
+class RenderingOptimizer {
+    static const String _logTag = 'RenderingOptimizer';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/performance');
+
     /// Reduce frame drops during category tile interactions
     static Future<void> optimizeScrollPerformance() async {
       if (!Platform.isAndroid) return;
@@ -186,14 +235,17 @@ class AndroidPerformanceOptimizer {
         final result = await _channel.invokeMethod('getFrameRateMetrics');
         return FrameRateReport.fromMap(result);
       } catch (e) {
-        debugPrint('$_logTag: Failed to get frame rate metrics: $e');
+        debugPrint('AndroidPerformanceOptimizer: Failed to get frame rate metrics: $e');
         return FrameRateReport.empty();
       }
     }
-  }
+}
 
-  /// Battery Optimization for Background Wellness Features
-  static class BatteryOptimizer {
+/// Battery Optimization for Background Wellness Features
+class BatteryOptimizer {
+    static const String _logTag = 'BatteryOptimizer';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/performance');
+
     /// Configure background processing limits for wellness features
     static Future<void> optimizeBackgroundProcessing() async {
       if (!Platform.isAndroid) return;
@@ -258,13 +310,16 @@ class AndroidPerformanceOptimizer {
 
         debugPrint('$_logTag: Doze mode compatibility enabled');
       } catch (e) {
-        debugPrint('$_logTag: Failed to enable doze compatibility: $e');
+        debugPrint('AndroidPerformanceOptimizer: Failed to enable doze compatibility: $e');
       }
     }
-  }
+}
 
-  /// Storage Optimization for Offline Wellness Content
-  static class StorageOptimizer {
+/// Storage Optimization for Offline Wellness Content
+class StorageOptimizer {
+    static const String _logTag = 'StorageOptimizer';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/performance');
+
     /// Optimize Hive database for life situations
     static Future<void> optimizeHiveStorage() async {
       if (!Platform.isAndroid) return;
@@ -331,14 +386,17 @@ class AndroidPerformanceOptimizer {
         final result = await _channel.invokeMethod('getStorageUsage');
         return StorageUsageReport.fromMap(result);
       } catch (e) {
-        debugPrint('$_logTag: Failed to get storage usage: $e');
+        debugPrint('AndroidPerformanceOptimizer: Failed to get storage usage: $e');
         return StorageUsageReport.empty();
       }
     }
-  }
+}
 
-  /// Network Optimization for Firebase Integration
-  static class NetworkOptimizer {
+/// Network Optimization for Firebase Integration
+class NetworkOptimizer {
+    static const String _logTag = 'NetworkOptimizer';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/performance');
+
     /// Optimize Firebase connection for Android
     static Future<void> optimizeFirebaseConnection() async {
       if (!Platform.isAndroid) return;
@@ -385,14 +443,17 @@ class AndroidPerformanceOptimizer {
         final result = await _channel.invokeMethod('getNetworkMetrics');
         return NetworkPerformanceReport.fromMap(result);
       } catch (e) {
-        debugPrint('$_logTag: Failed to get network metrics: $e');
+        debugPrint('AndroidPerformanceOptimizer: Failed to get network metrics: $e');
         return NetworkPerformanceReport.empty();
       }
     }
-  }
+}
 
-  /// Audio Session Management for Meditation Content
-  static class AudioOptimizer {
+/// Audio Session Management for Meditation Content
+class AudioOptimizer {
+    static const String _logTag = 'AudioOptimizer';
+    static const MethodChannel _channel = MethodChannel('com.hub4apps.mindfulliving/performance');
+
     /// Configure audio session for meditation
     static Future<void> configureAudioSession() async {
       if (!Platform.isAndroid) return;
@@ -444,13 +505,16 @@ class AndroidPerformanceOptimizer {
 
         debugPrint('$_logTag: Background audio configuration completed');
       } catch (e) {
-        debugPrint('$_logTag: Failed to configure background audio: $e');
+        debugPrint('AndroidPerformanceOptimizer: Failed to configure background audio: $e');
       }
     }
-  }
+}
 
-  /// Performance Monitoring and Metrics
-  static class PerformanceMonitor {
+/// Performance Monitoring and Metrics
+class PerformanceMonitor {
+    static const String _logTag = 'PerformanceMonitor';
+    static final Map<String, PerformanceMetric> _metrics = {};
+
     /// Start performance monitoring
     static void startMonitoring() {
       if (!Platform.isAndroid) return;
@@ -513,52 +577,6 @@ class AndroidPerformanceOptimizer {
     static void _startNetworkMonitoring() {
       // Implementation for network monitoring
     }
-  }
-
-  /// Private initialization methods
-  static Future<void> _enableHardwareAcceleration() async {
-    await _channel.invokeMethod('enableHardwareAcceleration');
-  }
-
-  static Future<void> _optimizeMemoryManagement() async {
-    await MemoryOptimizer.optimizeForLifeSituations();
-    await MemoryOptimizer.optimizeImageCaching();
-  }
-
-  static Future<void> _configureRenderingOptimizations() async {
-    await RenderingOptimizer.optimizeScrollPerformance();
-    await RenderingOptimizer.optimizeListViewPerformance();
-    await RenderingOptimizer.optimizeAnimations();
-  }
-
-  static Future<void> _setupBatteryOptimizations() async {
-    await BatteryOptimizer.optimizeBackgroundProcessing();
-    await BatteryOptimizer.optimizeNotificationScheduling();
-    await BatteryOptimizer.enableDozeCompatibility();
-  }
-
-  static Future<void> _optimizeStorageAccess() async {
-    await StorageOptimizer.optimizeHiveStorage();
-    await StorageOptimizer.setupIntelligentCaching();
-    await StorageOptimizer.optimizeDatabasePerformance();
-  }
-
-  static Future<void> _configureNetworkOptimizations() async {
-    await NetworkOptimizer.optimizeFirebaseConnection();
-    await NetworkOptimizer.setupIntelligentSync();
-  }
-
-  static Future<void> _setupAudioSessionManagement() async {
-    await AudioOptimizer.configureAudioSession();
-    await AudioOptimizer.optimizeAudioQuality();
-    await AudioOptimizer.configureBackgroundAudio();
-  }
-
-  /// Get optimizer status
-  static bool get isInitialized => _isInitialized;
-
-  /// Get performance metrics
-  static Map<String, PerformanceMetric> get metrics => Map.unmodifiable(_metrics);
 }
 
 /// Performance data models

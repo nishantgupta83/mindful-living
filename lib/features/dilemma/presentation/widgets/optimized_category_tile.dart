@@ -112,8 +112,8 @@ class _OptimizedCategoryTileState extends State<OptimizedCategoryTile>
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: widget.isSelected
-            ? Colors.white.withOpacity(0.2)
-            : _gradientCache.getCategoryColors(widget.category)[0].withOpacity(0.1),
+            ? Colors.white.withValues(alpha: 0.2)
+            : _gradientCache.getCategoryColors(widget.category)[0].withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

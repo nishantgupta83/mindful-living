@@ -103,7 +103,7 @@ class AndroidWellnessWidgets {
                 description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                   height: 1.4,
                 ),
                 maxLines: 3,
@@ -216,7 +216,7 @@ class AndroidWellnessWidgets {
                   'of ${_formatDuration(totalDuration)}',
                   style: TextStyle(
                     fontSize: 16,
-                    color: colorScheme.onSurface.withOpacity(0.7),
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -267,7 +267,7 @@ class AndroidWellnessWidgets {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: cardColor.withOpacity(0.1),
+                      color: cardColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -281,7 +281,7 @@ class AndroidWellnessWidgets {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _getTrendColor(trend, colorScheme).withOpacity(0.1),
+                        color: _getTrendColor(trend, colorScheme).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -308,7 +308,7 @@ class AndroidWellnessWidgets {
                     const SizedBox(width: 8),
                     Icon(
                       Icons.chevron_right,
-                      color: colorScheme.onSurface.withOpacity(0.5),
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
                       size: 20,
                     ),
                   ],
@@ -334,7 +334,7 @@ class AndroidWellnessWidgets {
                 title,
                 style: TextStyle(
                   fontSize: 16,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
 
@@ -344,7 +344,7 @@ class AndroidWellnessWidgets {
                   subtitle,
                   style: TextStyle(
                     fontSize: 12,
-                    color: colorScheme.onSurface.withOpacity(0.5),
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
               ],
@@ -390,7 +390,7 @@ class AndroidWellnessWidgets {
               end: Alignment.bottomRight,
               colors: [
                 bgColor,
-                bgColor.withOpacity(0.8),
+                bgColor.withValues(alpha: 0.8),
               ],
             ),
           ),
@@ -412,7 +412,7 @@ class AndroidWellnessWidgets {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: colorScheme.surface.withOpacity(0.2),
+                    color: colorScheme.surface.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -443,7 +443,7 @@ class AndroidWellnessWidgets {
                 description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                  color: colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -457,14 +457,14 @@ class AndroidWellnessWidgets {
                   Icon(
                     Icons.article_outlined,
                     size: 16,
-                    color: colorScheme.onPrimaryContainer.withOpacity(0.7),
+                    color: colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     '$itemCount situations',
                     style: TextStyle(
                       fontSize: 12,
-                      color: colorScheme.onPrimaryContainer.withOpacity(0.7),
+                      color: colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
                     ),
                   ),
                   const Spacer(),
@@ -535,7 +535,7 @@ class AndroidWellnessWidgets {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: colorScheme.shadow.withOpacity(0.1),
+                    color: colorScheme.shadow.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),

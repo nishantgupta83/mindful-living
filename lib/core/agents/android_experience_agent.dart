@@ -58,7 +58,7 @@ class AndroidExperienceAgent {
       ),
 
       // Material 3 Card design for life situations
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         color: colorScheme.surfaceContainerLow,
@@ -153,239 +153,11 @@ class AndroidExperienceAgent {
     );
   }
 
-  /// Android Performance Optimization for Wellness Content
-  static class AndroidPerformanceOptimizer {
-    /// Optimize memory usage for large life situation datasets
-    static void optimizeMemoryForLifeSituations() {
-      // Configure Flutter engine for large lists
-      _configureListOptimizations();
-
-      // Enable image caching for wellness content
-      _enableImageCaching();
-
-      // Configure audio session for meditation
-      _configureAudioSession();
-    }
-
-    /// Reduce frame drops during category tile interactions
-    static void optimizeScrollPerformance() {
-      // Configure scroll physics for smooth wellness browsing
-      _configureScrollPhysics();
-
-      // Enable hardware acceleration
-      _enableHardwareAcceleration();
-    }
-
-    /// Battery optimization for background wellness features
-    static void optimizeBatteryUsage() {
-      // Configure background processing limits
-      _configureBackgroundLimits();
-
-      // Optimize notification scheduling
-      _optimizeNotifications();
-    }
-
-    static void _configureListOptimizations() {
-      // Implementation for list performance
-      debugPrint('$_agentName: Configuring list optimizations for 1226+ life situations');
-    }
-
-    static void _enableImageCaching() {
-      // Implementation for image caching
-      debugPrint('$_agentName: Enabling image caching for wellness content');
-    }
-
-    static void _configureAudioSession() {
-      // Implementation for audio session management
-      debugPrint('$_agentName: Configuring audio session for meditation content');
-    }
-
-    static void _configureScrollPhysics() {
-      // Implementation for scroll optimization
-      debugPrint('$_agentName: Optimizing scroll performance for category browsing');
-    }
-
-    static void _enableHardwareAcceleration() {
-      // Implementation for hardware acceleration
-      debugPrint('$_agentName: Enabling hardware acceleration');
-    }
-
-    static void _configureBackgroundLimits() {
-      // Implementation for background processing
-      debugPrint('$_agentName: Configuring background processing limits');
-    }
-
-    static void _optimizeNotifications() {
-      // Implementation for notification optimization
-      debugPrint('$_agentName: Optimizing wellness reminder notifications');
-    }
-  }
-
-  /// Android Integration Services for Wellness Features
-  static class AndroidIntegrationService {
-    /// Google Fit integration for wellness tracking
-    static Future<bool> connectToGoogleFit() async {
-      if (!isAndroidPlatform) return false;
-
-      try {
-        // Implementation would use health package or google_fit_connector
-        debugPrint('$_agentName: Connecting to Google Fit for wellness tracking');
-        return true;
-      } catch (e) {
-        debugPrint('$_agentName: Google Fit connection failed: $e');
-        return false;
-      }
-    }
-
-    /// Android Auto integration for mindful driving
-    static Future<void> configureAndroidAutoSupport() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Configure Android Auto for voice-based wellness queries
-        debugPrint('$_agentName: Configuring Android Auto for mindful driving');
-      } catch (e) {
-        debugPrint('$_agentName: Android Auto configuration failed: $e');
-      }
-    }
-
-    /// Google Assistant integration for voice wellness queries
-    static Future<void> setupGoogleAssistantIntegration() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Setup App Actions for Google Assistant
-        debugPrint('$_agentName: Setting up Google Assistant integration');
-      } catch (e) {
-        debugPrint('$_agentName: Google Assistant setup failed: $e');
-      }
-    }
-
-    /// Android Widget for quick wellness access
-    static Future<void> configureHomeScreenWidget() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Configure home screen widget for quick wellness access
-        debugPrint('$_agentName: Configuring home screen wellness widget');
-      } catch (e) {
-        debugPrint('$_agentName: Widget configuration failed: $e');
-      }
-    }
-  }
-
-  /// Android Accessibility Services for Inclusive Wellness
-  static class AndroidAccessibilityService {
-    /// Configure TalkBack support for meditation sessions
-    static void configureTalkBackSupport() {
-      if (!isAndroidPlatform) return;
-
-      // Implementation for TalkBack accessibility
-      debugPrint('$_agentName: Configuring TalkBack support for meditation content');
-    }
-
-    /// Setup large text support for wellness content
-    static void configureLargeTextSupport() {
-      if (!isAndroidPlatform) return;
-
-      // Implementation for large text accessibility
-      debugPrint('$_agentName: Configuring large text support for life situations');
-    }
-
-    /// High contrast mode for wellness UI
-    static void configureHighContrastMode() {
-      if (!isAndroidPlatform) return;
-
-      // Implementation for high contrast accessibility
-      debugPrint('$_agentName: Configuring high contrast mode for wellness UI');
-    }
-  }
-
-  /// Android Notification Management for Wellness Reminders
-  static class AndroidNotificationManager {
-    static const String _channelId = 'mindful_living_wellness';
-    static const String _channelName = 'Wellness Reminders';
-
-    /// Create notification channels for different wellness categories
-    static Future<void> createNotificationChannels() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Create channels for meditation, journal, and daily check-ins
-        await _createMeditationChannel();
-        await _createJournalChannel();
-        await _createDailyCheckInChannel();
-
-        debugPrint('$_agentName: Created wellness notification channels');
-      } catch (e) {
-        debugPrint('$_agentName: Notification channel creation failed: $e');
-      }
-    }
-
-    /// Schedule intelligent wellness reminders
-    static Future<void> scheduleWellnessReminders() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Schedule personalized wellness reminders based on user behavior
-        debugPrint('$_agentName: Scheduling intelligent wellness reminders');
-      } catch (e) {
-        debugPrint('$_agentName: Wellness reminder scheduling failed: $e');
-      }
-    }
-
-    static Future<void> _createMeditationChannel() async {
-      // Implementation for meditation notification channel
-    }
-
-    static Future<void> _createJournalChannel() async {
-      // Implementation for journal notification channel
-    }
-
-    static Future<void> _createDailyCheckInChannel() async {
-      // Implementation for daily check-in notification channel
-    }
-  }
-
-  /// Android Storage Optimization for Wellness Data
-  static class AndroidStorageManager {
-    /// Optimize local storage for offline wellness content
-    static Future<void> optimizeLocalStorage() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Optimize Hive storage for life situations
-        await _optimizeHiveStorage();
-
-        // Configure SharedPreferences for user settings
-        await _optimizeSharedPreferences();
-
-        debugPrint('$_agentName: Optimized local storage for wellness data');
-      } catch (e) {
-        debugPrint('$_agentName: Storage optimization failed: $e');
-      }
-    }
-
-    /// Implement intelligent caching for wellness content
-    static Future<void> setupIntelligentCaching() async {
-      if (!isAndroidPlatform) return;
-
-      try {
-        // Setup caching strategy for frequently accessed life situations
-        debugPrint('$_agentName: Setting up intelligent caching for wellness content');
-      } catch (e) {
-        debugPrint('$_agentName: Caching setup failed: $e');
-      }
-    }
-
-    static Future<void> _optimizeHiveStorage() async {
-      // Implementation for Hive optimization
-    }
-
-    static Future<void> _optimizeSharedPreferences() async {
-      // Implementation for SharedPreferences optimization
-    }
-  }
+  // TODO: Performance optimization methods moved to android_performance_optimizer.dart
+  // TODO: Integration services moved to android_system_integration.dart
+  // TODO: Accessibility services moved to android_system_integration.dart
+  // TODO: Notification management moved to android_system_integration.dart
+  // TODO: Storage optimization moved to android_performance_optimizer.dart
 
   /// Private helper methods
   static Future<Map<String, dynamic>> _getAndroidInfo() async {
@@ -592,7 +364,7 @@ class AndroidWellnessWidgets {
                 description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
@@ -670,7 +442,7 @@ class AndroidWellnessWidgets {
                     'of ${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}',
                     style: TextStyle(
                       fontSize: 16,
-                      color: colorScheme.onSurface.withOpacity(0.7),
+                      color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -713,7 +485,7 @@ class AndroidWellnessWidgets {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: (accentColor ?? colorScheme.primary).withOpacity(0.1),
+                      color: (accentColor ?? colorScheme.primary).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -726,7 +498,7 @@ class AndroidWellnessWidgets {
                   if (onTap != null)
                     Icon(
                       Icons.chevron_right,
-                      color: colorScheme.onSurface.withOpacity(0.5),
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                 ],
               ),
@@ -744,7 +516,7 @@ class AndroidWellnessWidgets {
                 title,
                 style: TextStyle(
                   fontSize: 16,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               if (subtitle != null) ...[
@@ -753,7 +525,7 @@ class AndroidWellnessWidgets {
                   subtitle,
                   style: TextStyle(
                     fontSize: 12,
-                    color: colorScheme.onSurface.withOpacity(0.5),
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
               ],

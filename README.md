@@ -128,6 +128,45 @@ output-localization-file: app_localizations.dart
 
 ## 🔥 Firebase Integration
 
+### 🚨 CRITICAL SECURITY NOTICE
+
+**IMPORTANT**: Firebase configuration files contain sensitive API keys and should NEVER be committed to version control.
+
+#### Security Status
+- ✅ Firebase config files are now excluded from git tracking
+- ✅ `.gitignore` properly configured
+- ⚠️ **IMPORTANT**: These files were previously tracked in git history and need to be rotated
+
+#### Required Actions
+
+**For New Team Members:**
+1. Download configuration files from [Firebase Console](https://console.firebase.google.com/)
+2. Place them in the correct locations (see `FIREBASE_SETUP.md`)
+3. Verify files are NOT tracked: `git ls-files | grep -E "google-services|GoogleService-Info|firebase_options"`
+
+**Required Files**:
+- `android/app/google-services.json` (Android)
+- `ios/Runner/GoogleService-Info.plist` (iOS)
+- `lib/firebase_options.dart` (Flutter)
+- `ios/firebase_app_id_file.json` (iOS additional config)
+
+**For Project Administrators:**
+
+Since these files were previously committed to git, they exist in the repository history. Consider:
+
+1. **Rotate Firebase Keys** (Recommended):
+   - Go to Firebase Console > Project Settings
+   - Regenerate API keys or create new Firebase apps
+   - Download new configuration files
+   - Update local files
+
+2. **Clean Git History** (Optional but recommended):
+   - See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) Section "Security Best Practices > Remove from Git History"
+   - Use BFG Repo-Cleaner or git filter-branch to remove sensitive files from history
+   - Coordinate with team before rewriting history
+
+**DO NOT** commit these files to git. See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for complete setup instructions.
+
 ### Project Configuration
 - **Project ID**: `hub4apps-mindfulliving`
 - **Bundle ID**: `com.hub4apps.mindfulLiving`

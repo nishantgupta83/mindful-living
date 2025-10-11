@@ -582,7 +582,7 @@ class _OptimizedDilemmaModal extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.primaryBlue.withOpacity(0.1),
+            color: AppColors.primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -597,7 +597,7 @@ class _OptimizedDilemmaModal extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: _getDifficultyColor(dilemma['difficulty']).withOpacity(0.1),
+            color: _getDifficultyColor(dilemma['difficulty']).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -636,8 +636,8 @@ class _OptimizedDilemmaModal extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primaryBlue.withOpacity(0.05),
-            AppColors.mintGreen.withOpacity(0.05),
+            AppColors.primaryBlue.withValues(alpha: 0.05),
+            AppColors.mintGreen.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

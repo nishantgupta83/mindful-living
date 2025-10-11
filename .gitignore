@@ -69,3 +69,12 @@ HIBERNATE*.md
 FIX_APPLIED.md
 SESSION_*.md
 PROGRESS_REPORT.md
+
+# Firebase configuration files (contain API keys and sensitive data)
+# These files should be downloaded from Firebase Console and placed locally
+# See FIREBASE_SETUP.md for setup instructions
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
+firebase_options.dart
+ios/firebase_app_id_file.json

@@ -2,11 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/intelligent_search_service.dart';
+import '../../../../core/services/error_handling_service.dart';
 import '../../../../shared/widgets/category_filter_chips.dart';
 import '../../../../shared/widgets/situation_card.dart';
-import '../../../../shared/utils/life_area_utils.dart';
 
 /// Explore page with AI-powered search, filters, and infinite scroll
 class ExplorePage extends StatefulWidget {
@@ -27,7 +28,6 @@ class _ExplorePageState extends State<ExplorePage> {
   bool _isLoading = false;
   bool _hasMore = true;
   bool _isSearching = false;
-  bool _isIndexing = false;
   DocumentSnapshot? _lastDocument;
   Timer? _debounce;
   List<Map<String, dynamic>> _searchResults = [];
@@ -96,8 +96,27 @@ class _ExplorePageState extends State<ExplorePage> {
           _isSearching = false;
         });
       }
-    } catch (e) {
-      print('Search error: $e');
+    } on FirebaseException catch (e, stackTrace) {
+      ErrorHandlingService.instance.handleFirebaseError(
+        error: e,
+        stackTrace: stackTrace,
+        context: mounted ? context : null,
+        customMessage: 'Failed to search situations. Please try again.',
+      );
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+          _isSearching = false;
+        });
+      }
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: mounted ? context : null,
+        userMessage: 'Search error. Please try again.',
+        severity: ErrorSeverity.warning,
+      );
       if (mounted) {
         setState(() {
           _searchResults = [];
@@ -129,7 +148,24 @@ class _ExplorePageState extends State<ExplorePage> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } on FirebaseException catch (e, stackTrace) {
+      ErrorHandlingService.instance.handleFirestoreError(
+        error: e,
+        stackTrace: stackTrace,
+        context: mounted ? context : null,
+        customMessage: 'Failed to load situations. Please try again.',
+      );
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: mounted ? context : null,
+        userMessage: 'Failed to load data. Please check your connection.',
+        severity: ErrorSeverity.error,
+      );
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -156,7 +192,24 @@ class _ExplorePageState extends State<ExplorePage> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } on FirebaseException catch (e, stackTrace) {
+      ErrorHandlingService.instance.handleFirestoreError(
+        error: e,
+        stackTrace: stackTrace,
+        context: mounted ? context : null,
+        customMessage: 'Failed to load more situations.',
+      );
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e, stackTrace) {
+      ErrorHandlingService.instance.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: mounted ? context : null,
+        userMessage: 'Failed to load more data.',
+        severity: ErrorSeverity.warning,
+      );
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -303,7 +356,6 @@ class _ExplorePageState extends State<ExplorePage> {
         (context, index) {
           final result = _searchResults[index];
           final id = result['id'] as String;
-          final relevanceScore = result['relevanceScore'] as double?;
 
           return Hero(
             tag: 'situation_$id',

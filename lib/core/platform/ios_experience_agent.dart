@@ -189,7 +189,7 @@ class IOSExperienceAgent {
         borderRadius: BorderRadius.circular(12), // iOS rounded corners
         boxShadow: elevated ? [
           BoxShadow(
-            color: CupertinoColors.systemGrey.withOpacity(0.1),
+            color: CupertinoColors.systemGrey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -265,7 +265,7 @@ class IOSExperienceAgent {
               children: trailing!,
             )
           : null,
-      backgroundColor: CupertinoColors.systemBackground.withOpacity(0.9),
+      backgroundColor: CupertinoColors.systemBackground.withValues(alpha: 0.9),
       border: null,
     );
   }
@@ -294,8 +294,8 @@ class IOSExperienceAgent {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  (primaryColor ?? AppColors.deepLavender).withOpacity(opacity),
-                  (primaryColor ?? AppColors.deepLavender).withOpacity(0.1),
+                  (primaryColor ?? AppColors.deepLavender).withValues(alpha: opacity),
+                  (primaryColor ?? AppColors.deepLavender).withValues(alpha: 0.1),
                 ],
               ),
             ),

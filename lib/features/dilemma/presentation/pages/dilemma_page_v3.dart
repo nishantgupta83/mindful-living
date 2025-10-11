@@ -174,8 +174,8 @@ class _DilemmaPageV3State extends State<DilemmaPageV3>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                gradientColors[0].withOpacity(0.1),
-                gradientColors[1].withOpacity(0.05),
+                gradientColors[0].withValues(alpha: 0.1),
+                gradientColors[1].withValues(alpha: 0.05),
                 Colors.white,
               ],
             ),
@@ -215,7 +215,7 @@ class _DilemmaPageV3State extends State<DilemmaPageV3>
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -240,7 +240,7 @@ class _DilemmaPageV3State extends State<DilemmaPageV3>
                   Text(
                     'Ask me about any life situation',
                     style: AppTypography.bodySmall.copyWith(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
@@ -256,7 +256,7 @@ class _DilemmaPageV3State extends State<DilemmaPageV3>
   Widget _buildChatButton(List<Color> gradientColors) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Material(

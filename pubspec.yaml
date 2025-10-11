@@ -91,8 +91,10 @@ dev_dependencies:
   hive_generator: ^2.0.0
   build_runner: ^2.4.13
   mockito: ^5.4.4
-  integration_test:
-    sdk: flutter
+  # integration_test removed to prevent inclusion in release builds
+  # Add back temporarily if needed for integration testing:
+  # integration_test:
+  #   sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
