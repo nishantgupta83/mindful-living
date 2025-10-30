@@ -732,7 +732,7 @@ class _DilemmaPageV2State extends State<DilemmaPageV2> with SingleTickerProvider
     );
   }
 
-  Color _getDifficultyColor(String difficulty) {
+  static Color _getDifficultyColor(String difficulty) {
     switch (difficulty.toLowerCase()) {
       case 'low':
         return Colors.green;
@@ -883,13 +883,13 @@ class _DilemmaCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _getDifficultyColor(dilemma['difficulty']).withValues(alpha: 0.1),
+                        color: _DilemmaPageV2State._getDifficultyColor(dilemma['difficulty']).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         dilemma['difficulty'],
                         style: AppTypography.labelSmall.copyWith(
-                          color: _getDifficultyColor(dilemma['difficulty']),
+                          color: _DilemmaPageV2State._getDifficultyColor(dilemma['difficulty']),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -915,18 +915,5 @@ class _DilemmaCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getDifficultyColor(String difficulty) {
-    switch (difficulty.toLowerCase()) {
-      case 'low':
-        return Colors.green;
-      case 'medium':
-        return Colors.orange;
-      case 'high':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
   }
 }

@@ -43,32 +43,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _loadAppVersion() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      setState(() {
-        _appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
-      });
-    } on PlatformException catch (e, stackTrace) {
-      ErrorHandlingService.instance.handlePlatformError(
-        error: e,
-        stackTrace: stackTrace,
-        customMessage: null, // Don't show user message for version loading
-      );
-      setState(() {
-        _appVersion = 'Unknown';
-      });
-    } catch (e, stackTrace) {
-      ErrorHandlingService.instance.logError(
-        error: e,
-        stackTrace: stackTrace,
-        userMessage: null,
-        severity: ErrorSeverity.warning,
-      );
-      setState(() {
-        _appVersion = 'Unknown';
-      });
+      if (mounted) setState(() => _appVersion = '${packageInfo.version} (${packageInfo.buildNumber})');
+    } catch (e) {
+      if (mounted) setState(() => _appVersion = 'Unknown');
     }
   }
 
-  /// Load user preferences from persistent storage
   Future<void> _loadUserPreferences() async {
     try {
       final prefs = await _prefsService.loadAllPreferences();
@@ -80,15 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
           _fontSize = prefs['fontSize'] as String;
         });
       }
-    } catch (e, stackTrace) {
-      // Log error but don't show to user - preferences will use defaults
-      ErrorHandlingService.instance.logError(
-        error: e,
-        stackTrace: stackTrace,
-        userMessage: null, // Don't show SnackBar - preferences will use defaults
-        severity: ErrorSeverity.info,
-      );
-    }
+    } catch (_) {}
   }
 
   @override
@@ -259,29 +231,23 @@ class _ProfilePageState extends State<ProfilePage> {
       'Wellness Preferences',
       Icons.favorite_rounded,
       [
-        _buildSwitchTile(
+        _buildTile(
           icon: Icons.air_rounded,
           title: 'Breathing Reminders',
           subtitle: 'Get gentle reminders to breathe mindfully',
-          value: _breathingRemindersEnabled,
-          onChanged: (value) async {
-            setState(() {
-              _breathingRemindersEnabled = value;
-            });
-            // Persist the preference
+          switchValue: _breathingRemindersEnabled,
+          onSwitchChanged: (value) async {
+            setState(() => _breathingRemindersEnabled = value);
             await _prefsService.saveBreathingReminders(value);
           },
         ),
-        _buildSwitchTile(
+        _buildTile(
           icon: Icons.music_note_rounded,
           title: 'Background Music',
           subtitle: 'Play calming music during practices',
-          value: _backgroundMusicEnabled,
-          onChanged: (value) async {
-            setState(() {
-              _backgroundMusicEnabled = value;
-            });
-            // Persist the preference
+          switchValue: _backgroundMusicEnabled,
+          onSwitchChanged: (value) async {
+            setState(() => _backgroundMusicEnabled = value);
             await _prefsService.saveBackgroundMusic(value);
           },
         ),
@@ -294,40 +260,30 @@ class _ProfilePageState extends State<ProfilePage> {
       'Appearance',
       Icons.palette_rounded,
       [
-        _buildSwitchTile(
+        _buildTile(
           icon: Icons.dark_mode_rounded,
           title: 'Dark Mode',
           subtitle: 'Reduce eye strain in low light',
-          value: _darkModeEnabled,
-          onChanged: (value) async {
-            setState(() {
-              _darkModeEnabled = value;
-            });
-            // Persist the preference
+          switchValue: _darkModeEnabled,
+          onSwitchChanged: (value) async {
+            setState(() => _darkModeEnabled = value);
             await _prefsService.saveDarkMode(value);
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Dark mode coming soon!'),
-                  duration: Duration(seconds: 2),
-                ),
+                const SnackBar(content: Text('Dark mode coming soon!'), duration: Duration(seconds: 2)),
               );
             }
           },
         ),
-        _buildDropdownTile(
+        _buildTile(
           icon: Icons.text_fields_rounded,
           title: 'Text Size',
           subtitle: 'Adjust text size for readability',
-          value: _fontSize,
-          items: ['Small', 'Medium', 'Large'],
-          onChanged: (value) async {
-            final newValue = value ?? 'Medium';
-            setState(() {
-              _fontSize = newValue;
-            });
-            // Persist the preference
-            await _prefsService.saveFontSize(newValue);
+          dropdownValue: _fontSize,
+          dropdownItems: ['Small', 'Medium', 'Large'],
+          onDropdownChanged: (value) async {
+            setState(() => _fontSize = value ?? 'Medium');
+            await _prefsService.saveFontSize(value ?? 'Medium');
           },
         ),
       ],
@@ -434,15 +390,38 @@ class _ProfilePageState extends State<ProfilePage> {
     required String title,
     String? subtitle,
     Color? color,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
+    bool? switchValue,
+    ValueChanged<bool>? onSwitchChanged,
+    String? dropdownValue,
+    List<String>? dropdownItems,
+    ValueChanged<String?>? onDropdownChanged,
   }) {
+    final Widget trailing;
+    if (switchValue != null && onSwitchChanged != null) {
+      trailing = Switch(
+        value: switchValue,
+        onChanged: onSwitchChanged,
+        activeTrackColor: AppColors.lavender,
+      );
+    } else if (dropdownValue != null && dropdownItems != null && onDropdownChanged != null) {
+      trailing = DropdownButton<String>(
+        value: dropdownValue,
+        items: dropdownItems.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
+        onChanged: onDropdownChanged,
+        underline: Container(),
+        borderRadius: BorderRadius.circular(12),
+      );
+    } else {
+      trailing = Icon(Icons.chevron_right_rounded, color: AppColors.mutedGray);
+    }
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          // 44pt minimum touch target (iOS HIG)
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           constraints: const BoxConstraints(minHeight: 44),
           child: Row(
             children: [
@@ -453,11 +432,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: (color ?? AppColors.lavender).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: color ?? AppColors.deepLavender,
-                ),
+                child: Icon(icon, size: 20, color: color ?? AppColors.deepLavender),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -474,155 +449,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     if (subtitle != null) ...[
                       const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.lightGray,
-                        ),
-                      ),
+                      Text(subtitle, style: const TextStyle(fontSize: 13, color: AppColors.lightGray)),
                     ],
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.mutedGray,
-              ),
+              trailing,
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSwitchTile({
-    required IconData icon,
-    required String title,
-    String? subtitle,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      // 44pt minimum touch target
-      constraints: const BoxConstraints(minHeight: 44),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.lavender.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: AppColors.deepLavender,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.deepCharcoal,
-                  ),
-                ),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.lightGray,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeTrackColor: AppColors.lavender,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDropdownTile({
-    required IconData icon,
-    required String title,
-    String? subtitle,
-    required String value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      constraints: const BoxConstraints(minHeight: 44),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.lavender.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: AppColors.deepLavender,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.deepCharcoal,
-                  ),
-                ),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.lightGray,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          DropdownButton<String>(
-            value: value,
-            items: items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(item),
-              );
-            }).toList(),
-            onChanged: onChanged,
-            underline: Container(),
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ],
       ),
     );
   }
@@ -674,38 +509,24 @@ class _ProfilePageState extends State<ProfilePage> {
       isDestructive: false,
     );
 
-    if (confirmed == true) {
-      setState(() => _isLoading = true);
-      try {
-        await _authService.signOut();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Successfully signed out'),
-              backgroundColor: AppColors.success,
-            ),
-          );
-        }
-      } on FirebaseAuthException catch (e, stackTrace) {
-        ErrorHandlingService.instance.handleAuthError(
-          error: e,
-          stackTrace: stackTrace,
-          context: mounted ? context : null,
-          customMessage: 'Failed to sign out. Please try again.',
+    if (confirmed != true) return;
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.signOut();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully signed out'), backgroundColor: AppColors.success),
         );
-      } catch (e, stackTrace) {
-        ErrorHandlingService.instance.logError(
-          error: e,
-          stackTrace: stackTrace,
-          context: mounted ? context : null,
-          userMessage: 'Sign out failed. Please try again.',
-          severity: ErrorSeverity.error,
-        );
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to sign out. Please try again.'), backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -717,38 +538,24 @@ class _ProfilePageState extends State<ProfilePage> {
       isDestructive: true,
     );
 
-    if (confirmed == true) {
-      setState(() => _isLoading = true);
-      try {
-        await _authService.deleteAccount();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Account deleted successfully'),
-              backgroundColor: AppColors.success,
-            ),
-          );
-        }
-      } on FirebaseAuthException catch (e, stackTrace) {
-        ErrorHandlingService.instance.handleAuthError(
-          error: e,
-          stackTrace: stackTrace,
-          context: mounted ? context : null,
-          customMessage: 'Failed to delete account. You may need to sign in again first.',
+    if (confirmed != true) return;
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.deleteAccount();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account deleted successfully'), backgroundColor: AppColors.success),
         );
-      } catch (e, stackTrace) {
-        ErrorHandlingService.instance.logError(
-          error: e,
-          stackTrace: stackTrace,
-          context: mounted ? context : null,
-          userMessage: 'Account deletion failed. Please try again.',
-          severity: ErrorSeverity.error,
-        );
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete account. Try signing in again first.'), backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
