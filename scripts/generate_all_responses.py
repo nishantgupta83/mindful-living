@@ -73,7 +73,7 @@ def generate_response(scenario: Dict) -> str:
                 "temperature": 0.7,
                 "top_p": 0.9,
             },
-            timeout=300
+            timeout=600
         )
         response.raise_for_status()
         return response.json()["response"].strip()
